@@ -1,0 +1,9 @@
+export XCURSOR_SIZE=24
+export XCURSOR_THEME=Bibata-Modern-Classic
+export HYPRCURSOR_THEME=Bibata-Modern-Classic
+export HYPRCURSOR_SIZE=24
+
+export AQ_FORCE_LINEAR_BLIT=0
+export AQ_DRM_DEVICES="/dev/dri/nvidia-dgpu:/dev/dri/intel-igpu"
+
+export HYPRSHOT_DIR="$HOME/Pictures/Screenshots"

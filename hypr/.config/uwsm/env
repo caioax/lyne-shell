@@ -1,0 +1,23 @@
+export LIBVA_DRIVER_NAME=nvidia
+export __GLX_VENDOR_LIBRARY_NAME=nvidia
+export ELECTRON_OZONE_PLATFORM_HINT=auto
+export NVD_BACKEND=direct
+
+export XDG_CURRENT_DESKTOP=Hyprland
+export XDG_SESSION_TYPE=wayland
+export XDG_SESSION_DESKTOP=Hyprland
+export XDG_MENU_PREFIX=arch-
+
+export GDK_BACKEND="wayland,x11,*"
+
+export QT_QPA_PLATFORM="wayland;xcb"
+export QT_QPA_PLATFORMTHEME=qt6ct
+export QT_AUTO_SCREEN_SCALE_FACTOR=1
+export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+export LC_TIME=pt_BR.UTF-8
+export LC_NUMERIC=pt_BR.UTF-8
+export LC_MONETARY=pt_BR.UTF-8

@@ -1,0 +1,7 @@
+module qs.services
+singleton TimeService TimeService.qml
+singleton AudioService AudioService.qml
+singleton BluetoothService BluetoothService.qml
+singleton BatteryService BatteryService.qml
+singleton NetworkService NetworkService.qml
+singleton TrayService TrayService.qml

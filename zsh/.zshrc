@@ -82,9 +82,81 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting history)
+plugins=(git zsh-autosuggestions zsh-vi-mode zsh-syntax-highlighting history)
 
 source $ZSH/oh-my-zsh.sh
+
+# --- Integração Zsh Vi Mode ---
+
+# Configurações iniciais
+ZVM_CURSOR_STYLE_ENABLED=true
+autoload -U edit-command-line
+zle -N edit-command-line
+
+# --- Variáveis de Controle ---
+typeset -g IN_CMD_MODE=0
+typeset -g HAS_STASHED=0
+
+# 1. Função Mestra (Toggle)
+function toggle-cmd-mode() {
+  # --- SAIR/CANCELAR ---
+  if [[ "$IN_CMD_MODE" -eq 1 ]]; then
+    IN_CMD_MODE=0
+    BUFFER="" 
+
+    # Traz de volta o comando antigo
+    if [[ "$HAS_STASHED" -eq 1 ]]; then
+       zle .get-line
+    fi
+
+    RPROMPT=""
+    zle reset-prompt
+    zle -U "a"
+    return
+  fi
+
+  # --- ENTRAR ---
+  IN_CMD_MODE=1
+  HAS_STASHED=0
+
+  if [[ -n "$BUFFER" ]]; then
+    zle push-line
+    HAS_STASHED=1
+  fi
+
+  BUFFER=""
+
+  # Aviso visual
+  RPROMPT="%B%F{cyan}COMMAND%f%b"
+  zle reset-prompt
+
+  zle -U "i"
+}
+zle -N toggle-cmd-mode
+
+# 2. Executar (Enter)
+function execute-cmd-mode() {
+  if [[ "$IN_CMD_MODE" -eq 1 ]]; then
+    IN_CMD_MODE=0
+    RPROMPT=""
+    zle reset-prompt
+  fi
+  zle .accept-line
+}
+zle -N execute-cmd-mode
+
+# --- Bindings ---
+function zvm_after_init() {
+  zvm_bindkey vicmd '^V' edit-command-line
+  zvm_bindkey viins '^V' edit-command-line
+
+  # ':' Entra no modo
+  zvm_bindkey vicmd ':' toggle-cmd-mode
+
+  # 'Enter' executa
+  zvm_bindkey viins '^M' execute-cmd-mode
+  zvm_bindkey vicmd '^M' execute-cmd-mode
+}
 
 # User configuration
 
@@ -94,11 +166,11 @@ source $ZSH/oh-my-zsh.sh
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='nvim'
-# fi
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='vim'
+else
+  export EDITOR='nvim'
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch $(uname -m)"

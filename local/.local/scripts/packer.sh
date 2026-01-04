@@ -1,41 +1,47 @@
 #!/bin/bash
 
-# 1. Pega o diretório. Se vazio, usa o atual.
-ALVO="${1:-.}"
-ARQUIVO_SAIDA="$(pwd)/output-packer.txt"
+# Get the directory. If empty, use current.
+TARGET="${1:-.}"
+OUTPUT_FILE="$(pwd)/output-packer.txt"
 
-if [ ! -d "$ALVO" ]; then
-  echo "Erro: Diretório '$ALVO' não existe."
-  exit 1
+if [ ! -d "$TARGET" ]; then
+    echo "Error: Directory '$TARGET' does not exist."
+    exit 1
 fi
 
-echo "--- Iniciando ---"
-echo "Lendo: $ALVO"
-echo "Saída: $ARQUIVO_SAIDA"
->"$ARQUIVO_SAIDA"
+# Convert TARGET to absolute path to ensure relative calculation works perfectly
+TARGET_ABS=$(realpath "$TARGET")
 
-find "$ALVO" -type f \
-  -not -path '*/.git/*' \
-  -not -path '*/node_modules/*' \
-  -not -path '*/build/*' \
-  -not -name '.*' \
-  -not -name 'package-lock.json' \
-  -not -name 'output-packer.txt' \
-  -not -name "$(basename "$0")" \
-  -print0 | while IFS= read -r -d '' file; do
+echo "--- Starting ---"
+echo "Reading: $TARGET_ABS"
+echo "Output: $OUTPUT_FILE"
+>"$OUTPUT_FILE"
 
-  # Debug: Mostra o que está sendo lido na tela
-  echo "Processando: $file"
+find "$TARGET" -type f \
+    -not -path '*/.git/*' \
+    -not -path '*/node_modules/*' \
+    -not -path '*/build/*' \
+    -not -name '.*' \
+    -not -name 'package-lock.json' \
+    -not -name 'output-packer.txt' \
+    -not -name "$(basename "$0")" \
+    -print0 | while IFS= read -r -d '' file; do
 
-  # Verificação mais robusta se é arquivo de texto usando comando 'file'
-  if file "$file" | grep -q "text"; then
-    echo -e "\n\n==================================================" >>"$ARQUIVO_SAIDA"
-    echo "ARQUIVO: $file" >>"$ARQUIVO_SAIDA"
-    echo "==================================================" >>"$ARQUIVO_SAIDA"
-    cat "$file" >>"$ARQUIVO_SAIDA"
-  else
-    echo " -> Ignorado (Binário): $file"
-  fi
+    # Calculate relative path
+    RELATIVE_PATH=$(realpath --relative-to="$TARGET_ABS" "$file")
+
+    # Debug: Show what is being processed on screen
+    echo "Processing: $RELATIVE_PATH"
+
+    # Robust check if it is a text file using 'file' command
+    if file "$file" | grep -q "text"; then
+        echo -e "\n\n==================================================" >>"$OUTPUT_FILE"
+        echo "FILE: $RELATIVE_PATH" >>"$OUTPUT_FILE"
+        echo "==================================================" >>"$OUTPUT_FILE"
+        cat "$file" >>"$OUTPUT_FILE"
+    else
+        echo " -> Ignored (Binary): $RELATIVE_PATH"
+    fi
 done
 
-echo "--- Concluído ---"
+echo "--- Done ---"

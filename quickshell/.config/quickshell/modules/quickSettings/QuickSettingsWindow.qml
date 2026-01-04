@@ -11,158 +11,153 @@ import "./pages/"
 PopupWindow {
     id: root
 
-    // Defina o tamanho fixo da sua janela
-    implicitWidth: 400
-    implicitHeight: 400
+    // Tamanho da janela
+    implicitWidth: 380
+    implicitHeight: (pageStack.currentIndex ? pageStack.implicitHeight : 300) + 20
+
+    // Animação suave quando a altura muda (troca de página)
+    Behavior on implicitHeight {
+        NumberAnimation {
+            duration: 200
+            easing.type: Easing.OutQuad
+        }
+    }
 
     color: "transparent"
 
-    // Processos para Criar/Apagar o arquivo de trava
+    property bool isClosing: false
+    property bool isOpening: false
+
+    function closeWindow() {
+        if (!visible)
+            return;
+        isClosing = true;
+        closeTimer.restart();
+    }
+
+    // Timer de saída
+    Timer {
+        id: closeTimer
+        interval: Config.animDuration
+        onTriggered: {
+            root.visible = false;
+            isClosing = false;
+            pageStack.currentIndex = 0;
+        }
+    }
+
+    // --- Processos ---
     Process {
         id: createLock
         command: ["touch", "/tmp/QsQuickSettingsOpen"]
     }
-
     Process {
         id: removeLock
         command: ["rm", "/tmp/QsQuickSettingsOpen"]
     }
 
+    // --- Foco ---
     HyprlandFocusGrab {
         id: focusGrab
-
         windows: [root]
-
         active: false
-
-        onCleared: {
-            root.visible = false;
-        }
+        onCleared: root.closeWindow()
     }
 
-    // Timer para garantir que a janela já existe antes de pedir o foco
     Timer {
         id: grapTimer
         interval: 10
-        repeat: false
         onTriggered: {
             focusGrab.active = true;
             background.forceActiveFocus();
         }
     }
 
-    // Lógica manual de ativação
+    // Gestão de estado ao abrir/fechar
     onVisibleChanged: {
         if (visible) {
+            isClosing = false;
+            isOpening = true;
             createLock.running = true;
-
             grapTimer.restart();
         } else {
             removeLock.running = true;
-
-            pageStack.currentIndex = 0; // Volta para o menu principal
-            grapTimer.stop();
+            pageStack.currentIndex = 0;
             focusGrab.active = false;
+            isOpening = false;
         }
     }
 
+    // Layout
     Rectangle {
         id: background
-
         anchors.fill: parent
         color: Config.backgroundColor
-        radius: Config.radius
-        border.width: 0
-        border.color: Config.surface2Color
+        radius: Config.radiusLarge
+        // border.width: 1
+        // border.color: Config.surface2Color
         clip: true
-        focus: true
+
+        transformOrigin: Item.TopRight
+        property bool showState: visible && !isClosing && isOpening
+        scale: showState ? 1.0 : 0.9
+        opacity: showState ? 1.0 : 0.0
+
+        Behavior on scale {
+            NumberAnimation {
+                duration: Config.animDurationLong
+                easing.type: Easing.OutExpo
+            }
+        }
+        Behavior on opacity {
+            NumberAnimation {
+                duration: Config.animDurationShort
+            }
+        }
+
         Keys.onEscapePressed: {
-            root.visible = false;
+            root.closeWindow();
         }
 
         StackLayout {
             id: pageStack
             anchors.fill: parent
-            anchors.margins: 10
-            currentIndex: 0 // 0 = Menu Principal
+            anchors.margins: 16
+            currentIndex: 0
 
-            // --- PÁGINA 0: MENU PRINCIPAL ---
-            ColumnLayout {
-                spacing: 10
-
-                Text {
-                    text: "Quick Settings"
-                    font.bold: true
-                    color: Config.textColor
-                    Layout.alignment: Qt.AlignHCenter
-                }
-
-                // Exemplo de layout em grade para os botões
-                GridLayout {
-                    columns: 2
-                    Layout.fillWidth: true
-
-                    // Botão WI-FI
-                    QuickSettingsTile {
-                        icon: NetworkService.systemIcon
-                        label: "Wi-Fi"
-                        active: NetworkService.wifiEnabled
-                        hasDetails: true
-
-                        onToggled: NetworkService.toggleWifi()
-                        onOpenDetails: pageStack.currentIndex = 1
-                    }
-
-                    // Botão BLUETOOTH
-                    QuickSettingsTile {
-                        icon: BluetoothService.systemIcon
-                        label: "Bluetooth"
-                        active: BluetoothService.isPowered
-                        hasDetails: true
-
-                        onToggled: BluetoothService.togglePower()
-                        onOpenDetails: pageStack.currentIndex = 3
-                    }
-
-                    // Outros botões (ex: Modo Escuro, sem detalhes)
-                    QuickSettingsTile {
-                        icon: "󰽥 "
-                        label: "Dark"
-                        hasDetails: false
-                        onToggled: active = !active
-                    }
-                }
-
-                // Espaço vazio para empurrar tudo pra cima
-                Item {
-                    Layout.fillHeight: true
-                }
+            // ==========================
+            // PÁGINA 0: DASHBOARD
+            // ==========================
+            DashboardPage {
+                onCloseWindow: root.closeWindow()
             }
 
-            // Wifi
+            // ==========================
+            // PÁGINA 1: WI-FI
+            // ==========================
             WifiPage {
                 onBackRequested: pageStack.currentIndex = 0
-
                 onPasswordRequested: ssid => {
-                    console.log("Pedido senha para: " + ssid);
                     wifiPasswordPage.targetSsid = ssid;
                     pageStack.currentIndex = 2;
                 }
             }
 
-            // Senha Wifi
+            // ==========================
+            // PÁGINA 2: SENHA WI-FI
+            // ==========================
             WifiPasswordPage {
                 id: wifiPasswordPage
-
                 onCancelled: pageStack.currentIndex = 1
-
                 onConnectClicked: password => {
                     NetworkService.connect(targetSsid, password);
                     pageStack.currentIndex = 1;
                 }
             }
 
-            // Bluetooth
+            // ==========================
+            // PÁGINA 3: BLUETOOTH
+            // ==========================
             BluetoothPage {
                 onBackRequested: pageStack.currentIndex = 0
             }

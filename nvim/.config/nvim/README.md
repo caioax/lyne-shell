@@ -24,13 +24,12 @@ Integração fluida com o Tmux. Não requer Leader.
 
 ### 📂 Arquivos e Busca (Telescope)
 
-|    Atalho     | Ação        | Descrição                                          |
-| :-----------: | :---------- | :------------------------------------------------- |
-|   **`f f`**   | Find Files  | Busca arquivos pelo nome (ignora gitignore).       |
-|   **`f g`**   | Live Grep   | Busca por texto dentro de todos os arquivos.       |
-|   **`f b`**   | Buffers     | Lista arquivos abertos na memória.                 |
-|    **`e`**    | Explorer    | Abre/Fecha a árvore lateral (`NeoTree`).           |
-| **`:Delete`** | **Deletar** | Comando customizado: Apaga arquivo atual do disco. |
+|  Atalho   | Ação       | Descrição                                    |
+| :-------: | :--------- | :------------------------------------------- |
+| **`f f`** | Find Files | Busca arquivos pelo nome (ignora gitignore). |
+| **`f g`** | Live Grep  | Busca por texto dentro de todos os arquivos. |
+| **`f b`** | Buffers    | Lista arquivos abertos na memória.           |
+|  **`e`**  | Explorer   | Abre/Fecha a árvore lateral (`NeoTree`).     |
 
 ### 🛠️ Ferramentas (Snacks.nvim)
 

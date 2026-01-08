@@ -29,8 +29,8 @@ Aperte `Ctrl`+`Space`, solte, e digite a tecla abaixo.
 ### 🪟 Gestão de Painéis (Splits)
 
 |     Tecla     | Ação             | Descrição                                           |
-| :-----------: | :--------------- | :-------------------------------------------------- | --------------------------------------------- |
-|     \*\*`     | `\*\*            | Split Vertical                                      | Divide a tela lado a lado (mantém diretório). |
+| :-----------: | :--------------- | :-------------------------------------------------- |
+|    **`│`**    | Split Vertical   | Divide a tela lado a lado (mantém diretório).       |
 |    **`-`**    | Split Horizontal | Divide a tela cima/baixo (mantém diretório).        |
 |    **`x`**    | Fechar           | Fecha o painel atual (kill-pane).                   |
 |    **`z`**    | Zoom             | Maximiza/Restaura o painel atual.                   |

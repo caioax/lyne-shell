@@ -37,7 +37,7 @@ return {
 					{
 						icon = " ",
 						key = "f",
-						desc = "Procurar Arquivo",
+						desc = "Find File",
 						action = function()
 							require("telescope.builtin").find_files()
 						end,
@@ -45,13 +45,13 @@ return {
 					{
 						icon = " ",
 						key = "n",
-						desc = "Novo Arquivo",
+						desc = "New File",
 						action = ":ene | startinsert",
 					},
 					{
 						icon = " ",
 						key = "g",
-						desc = "Procurar Texto",
+						desc = "Find Text",
 						action = function()
 							require("telescope.builtin").live_grep()
 						end,
@@ -59,7 +59,7 @@ return {
 					{
 						icon = " ",
 						key = "r",
-						desc = "Arquivos Recentes",
+						desc = "Recent Files",
 						action = function()
 							require("telescope.builtin").oldfiles()
 						end,
@@ -67,13 +67,27 @@ return {
 					{
 						icon = " ",
 						key = "c",
-						desc = "Configuração",
+						desc = "Configuration",
 						action = function()
-							require("telescope.builtin").find_files({ cwd = vim.fn.stdpath("config") })
+							require("telescope.builtin").find_files({
+								cwd = vim.fn.stdpath("config"),
+								prompt_title = " Neovim Config Files",
+								follow = true,
+							})
 						end,
 					},
-					{ icon = " ", key = "s", desc = "Restaurar Sessão", section = "session" },
-					{ icon = " ", key = "q", desc = "Sair", action = ":qa" },
+					{
+						icon = " ",
+						key = "s",
+						desc = "Restore Session",
+						section = "session",
+					},
+					{
+						icon = " ",
+						key = "q",
+						desc = "Quit",
+						action = ":qa",
+					},
 				},
 			},
 			sections = {

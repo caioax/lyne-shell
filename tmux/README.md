@@ -47,11 +47,10 @@ Aperte `Ctrl`+`Space`, solte, e digite a tecla abaixo.
 
 ### 🚀 Popups & Ferramentas
 
-|    Tecla    | Ferramenta                                       |
-| :---------: | :----------------------------------------------- |
-| **`Enter`** | **Terminal Flutuante** (Zsh no diretório atual). |
-|   **`N`**   | Abre o README do **Neovim** (Modo Leitura).      |
-|   **`T`**   | Abre este README do **Tmux** (Modo Leitura).     |
+|  Tecla  | Ferramenta                                   |
+| :-----: | :------------------------------------------- |
+| **`N`** | Abre o README do **Neovim** (Modo Leitura).  |
+| **`T`** | Abre este README do **Tmux** (Modo Leitura). |
 
 ---
 

@@ -20,6 +20,21 @@ Integração fluida com o Tmux. Não requer Leader.
 
 ---
 
+## 📋 Clipboard & Copiar/Colar
+
+Fluxo de trabalho onde do Yank e Clipboard do sistema
+
+| Atalho              | Ação                 | Descrição                                                               |
+| :------------------ | :------------------- | :---------------------------------------------------------------------- |
+| **`y`** / **`p`**   | **Interno (Seguro)** | `p` cola sempre o último **Yank** (`0`), ignorando deletes recentes.    |
+| **`Space` + `y`**   | Copiar p/ Sistema    | Copia a seleção para o clipboard do **Sistema** (Ctrl+V funciona fora). |
+| **`Space` + `p`**   | Colar do Sistema     | Cola o conteúdo vindo do clipboard do **Sistema**.                      |
+| **`Space` + `d`**   | Colar Deletado       | Cola o que foi realmente apagado/cortado (`dd` / `x` etc).              |
+| **`Space` + `"`**   | **Ver Gavetas**      | Abre menu visual (`Telescope`) com histórico de cópias.                 |
+| **`Space` + `y c`** | Exportar             | Envia um registro específico (`0`, `a`...) para o Sistema.              |
+
+---
+
 ## ⌨️ Comandos do Leader (`Space` + Tecla)
 
 ### 📂 Arquivos e Busca (Telescope)

@@ -11,9 +11,14 @@ import "./pages/"
 PopupWindow {
     id: root
 
-    // Tamanho da janela
-    implicitWidth: 380
-    implicitHeight: (pageStack.children[pageStack.currentIndex]?.implicitHeight ?? 300) + 32
+    // Configurações de tamanho
+    readonly property int contentWidth: 400
+    readonly property int defaultHeight: 300
+    readonly property int internalMargin: 32
+    readonly property int screenMargin: 15
+
+    implicitWidth: contentWidth + screenMargin
+    implicitHeight: (pageStack.children[pageStack.currentIndex]?.implicitHeight ?? defaultHeight) + internalMargin
 
     // Animação suave quando a altura muda (troca de página)
     Behavior on implicitHeight {
@@ -89,77 +94,83 @@ PopupWindow {
     }
 
     // Layout
-    Rectangle {
-        id: background
+    Item {
         anchors.fill: parent
-        color: Config.backgroundColor
-        radius: Config.radiusLarge
-        // border.width: 1
-        // border.color: Config.surface2Color
-        clip: true
 
-        transformOrigin: Item.TopRight
-        property bool showState: visible && !isClosing && isOpening
-        scale: showState ? 1.0 : 0.9
-        opacity: showState ? 1.0 : 0.0
+        Rectangle {
+            id: background
+            width: root.contentWidth
+            height: root.implicitHeight
+            anchors.centerIn: parent
+            color: Config.backgroundColor
+            radius: Config.radiusLarge
+            // border.width: 1
+            // border.color: Config.surface2Color
+            clip: true
 
-        Behavior on scale {
-            NumberAnimation {
-                duration: Config.animDurationLong
-                easing.type: Easing.OutExpo
+            transformOrigin: Item.TopRight
+            property bool showState: visible && !isClosing && isOpening
+            scale: showState ? 1.0 : 0.9
+            opacity: showState ? 1.0 : 0.0
+
+            Behavior on scale {
+                NumberAnimation {
+                    duration: Config.animDurationLong
+                    easing.type: Easing.OutExpo
+                }
             }
-        }
-        Behavior on opacity {
-            NumberAnimation {
-                duration: Config.animDurationShort
-            }
-        }
-
-        Keys.onEscapePressed: {
-            root.closeWindow();
-        }
-
-        StackLayout {
-            id: pageStack
-            anchors.fill: parent
-            anchors.margins: 16
-            currentIndex: 0
-
-            // ==========================
-            // PÁGINA 0: DASHBOARD
-            // ==========================
-            DashboardPage {
-                onCloseWindow: root.closeWindow()
-            }
-
-            // ==========================
-            // PÁGINA 1: WI-FI
-            // ==========================
-            WifiPage {
-                onBackRequested: pageStack.currentIndex = 0
-                onPasswordRequested: ssid => {
-                    wifiPasswordPage.targetSsid = ssid;
-                    pageStack.currentIndex = 2;
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: Config.animDurationShort
                 }
             }
 
-            // ==========================
-            // PÁGINA 2: SENHA WI-FI
-            // ==========================
-            WifiPasswordPage {
-                id: wifiPasswordPage
-                onCancelled: pageStack.currentIndex = 1
-                onConnectClicked: password => {
-                    NetworkService.connect(targetSsid, password);
-                    pageStack.currentIndex = 1;
-                }
+            Keys.onEscapePressed: {
+                root.closeWindow();
             }
 
-            // ==========================
-            // PÁGINA 3: BLUETOOTH
-            // ==========================
-            BluetoothPage {
-                onBackRequested: pageStack.currentIndex = 0
+            StackLayout {
+                id: pageStack
+                anchors.fill: parent
+                anchors.margins: 16
+                currentIndex: 0
+
+                // ==========================
+                // PÁGINA 0: DASHBOARD
+                // ==========================
+                DashboardPage {
+                    onCloseWindow: root.closeWindow()
+                }
+
+                // ==========================
+                // PÁGINA 1: WI-FI
+                // ==========================
+                WifiPage {
+                    onBackRequested: pageStack.currentIndex = 0
+                    onPasswordRequested: ssid => {
+                        wifiPasswordPage.targetSsid = ssid;
+                        pageStack.currentIndex = 2;
+                    }
+                }
+
+                // ==========================
+                // PÁGINA 2: SENHA WI-FI
+                // ==========================
+                WifiPasswordPage {
+                    id: wifiPasswordPage
+                    onCancelled: pageStack.currentIndex = 1
+                    onConnectClicked: password => {
+                        NetworkService.connect(targetSsid, password);
+                        pageStack.currentIndex = 1;
+                    }
+                }
+
+                // ==========================
+                // PÁGINA 3: BLUETOOTH
+                // ==========================
+                BluetoothPage {
+                    onBackRequested: pageStack.currentIndex = 0
+                }
             }
         }
     }

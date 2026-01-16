@@ -12,17 +12,12 @@ Singleton {
     // LISTAS DE NOTIFICAÇÕES
     // ========================================================================
 
-    // Lista principal de wrappers (todas as notificações)
     readonly property list<NotifWrapper> notifications: []
-
-    // Lista de popups ativos (filtrada)
     readonly property list<NotifWrapper> popups: notifications.filter(n => n && n.popup)
 
-    // Contagem para a UI
     readonly property int count: notifications.length
     readonly property int activePopupCount: popups.length
 
-    // ID da notificação com hover (para pausar timer)
     property int hoveredNotificationId: -1
 
     // ========================================================================
@@ -44,22 +39,16 @@ Singleton {
         onNotification: notif => {
             console.log("[Notif] Recebida:", notif.appName, "-", notif.summary);
 
-            // Marca como tracked para persistir
             notif.tracked = true;
 
-            // Cria o wrapper
             const wrapper = notifComponent.createObject(root, {
                 "popup": true,
                 "notification": notif
             });
 
             if (wrapper) {
-                // Adiciona à lista (isso dispara a reatividade)
                 root.notifications.push(wrapper);
-
-                // Inicia o timer do popup
                 wrapper.startLifecycle();
-
                 console.log("[Notif] Wrapper criado. Total:", root.notifications.length, "Popups:", root.popups.length);
             }
         }
@@ -72,63 +61,58 @@ Singleton {
     component NotifWrapper: QtObject {
         id: wrapper
 
-        // Estado do popup
         property bool popup: false
 
-        // Lógica de pausa do timer
-        // Quanto tempo falta para expirar (começa com o total)
-        property int _remainingTime: Config.notifTimeout
-        // Timestamp de quando o timer começou a rodar pela última vez
-        property double _startTime: 0
+        // ====== SISTEMA DE TIMER COM TICK (para pausa real) ======
+        property int totalTime: Config.notifTimeout
+        property int remainingTime: Config.notifTimeout
 
-        // Timer em sí
-        readonly property Timer timer: Timer {
-            interval: wrapper._remainingTime
-            repeat: false
+        // Progresso de 0.0 a 1.0 (para a barra de progresso no Card)
+        property real progress: 0.0
+
+        // Timer que decrementa a cada 50ms
+        readonly property Timer tickTimer: Timer {
+            interval: 50
+            repeat: true
             running: false
+
             onTriggered: {
-                console.log("[Notif] Timer expirou para:", wrapper.notification ? wrapper.notification.id : "?");
-                wrapper.popup = false;
+                if (wrapper.remainingTime > 0) {
+                    wrapper.remainingTime -= interval;
+                    wrapper.progress = 1.0 - (wrapper.remainingTime / wrapper.totalTime);
+
+                    if (wrapper.remainingTime <= 0) {
+                        wrapper.remainingTime = 0;
+                        wrapper.progress = 1.0;
+                        stop();
+                        wrapper.popup = false;
+                        console.log("[Notif] Timer expirou para:", wrapper.notifId);
+                    }
+                }
             }
         }
 
-        // Função para iniciar a vida do popup (chama ao criar)
         function startLifecycle() {
-            _remainingTime = Config.notifTimeout;
-            _startTime = Date.now();
-            timer.interval = _remainingTime;
-            timer.start();
+            remainingTime = totalTime;
+            progress = 0.0;
+            tickTimer.start();
         }
 
         // Pausa o timer quando hover
-        property bool isPaused: root.hoveredNotificationId == (notification ? notification.id : -1)
+        property bool isPaused: root.hoveredNotificationId === (notification ? notification.id : -1)
 
         onIsPausedChanged: {
             if (isPaused) {
-                // --- PAUSAR ---
-                if (timer.running) {
-                    timer.stop();
-                    // Calcula quanto tempo passou desde o start até agora
-                    var elapsed = Date.now() - _startTime;
-                    // Subtrai do tempo restante
-                    _remainingTime -= elapsed;
-
-                    if (_remainingTime < 0)
-                        _remainingTime = 0;
-                    console.log("[Notif] Pausado. Restam:", _remainingTime, "ms");
+                if (tickTimer.running) {
+                    tickTimer.stop();
+                    console.log("[Notif] Pausado:", notifId, "- Restam:", remainingTime, "ms - Progress:", progress.toFixed(2));
                 }
             } else {
-                // --- RETOMAR ---
-                if (popup && _remainingTime > 0) {
-                    // Atualiza o start time para "agora"
-                    _startTime = Date.now();
-                    // Define o intervalo do timer apenas com o que falta
-                    timer.interval = _remainingTime;
-                    timer.start();
-                    console.log("[Notif] Retomado.");
-                } else if (popup && _remainingTime <= 0) {
-                    // Se o tempo acabou durante a lógica, fecha logo
-                    wrapper.popup = false;
+                if (popup && remainingTime > 0 && !tickTimer.running) {
+                    tickTimer.start();
+                    console.log("[Notif] Retomado:", notifId, "- Restam:", remainingTime, "ms");
+                } else if (popup && remainingTime <= 0) {
+                    popup = false;
                 }
             }
         }
@@ -152,10 +136,8 @@ Singleton {
             return Math.floor(hours / 24) + "d atrás";
         }
 
-        // Referência à notificação nativa
         required property Notification notification
 
-        // Propriedades derivadas (com null-safety)
         readonly property int notifId: notification ? notification.id : -1
         readonly property string summary: notification ? (notification.summary || "") : ""
         readonly property string body: notification ? (notification.body || "") : ""
@@ -163,21 +145,21 @@ Singleton {
         readonly property string appName: notification ? (notification.appName || "Sistema") : "Sistema"
         readonly property string image: notification ? (notification.image || "") : ""
         readonly property int urgency: notification ? notification.urgency : 0
-        readonly property bool isUrgent: urgency === 2 // NotificationUrgency.Critical
+        readonly property bool isUrgent: urgency === 2
         readonly property var actions: notification ? (notification.actions || []) : []
         readonly property bool hasActions: actions && actions.length > 0
 
-        // Conexão para quando a notificação é destruída
         readonly property Connections conn: Connections {
             target: wrapper.notification ? wrapper.notification.Retainable : null
 
             function onDropped(): void {
                 console.log("[Notif] Dropped:", wrapper.notifId);
-                // Remove da lista
+                wrapper.tickTimer.stop();
                 root.notifications = root.notifications.filter(w => w !== wrapper);
             }
 
             function onAboutToDestroy(): void {
+                wrapper.tickTimer.stop();
                 wrapper.destroy();
             }
         }
@@ -200,24 +182,22 @@ Singleton {
         hoveredNotificationId = -1;
     }
 
-    // Esconde o popup mas mantém no histórico
     function expireNotification(notifId) {
         for (let i = 0; i < notifications.length; i++) {
             if (notifications[i].notifId === notifId) {
                 notifications[i].popup = false;
-                notifications[i].timer.stop();
+                notifications[i].tickTimer.stop();
                 break;
             }
         }
     }
 
-    // Remove completamente
     function removeNotification(notifId) {
         for (let i = 0; i < notifications.length; i++) {
             if (notifications[i].notifId === notifId) {
                 const wrapper = notifications[i];
                 wrapper.popup = false;
-                wrapper.timer.stop();
+                wrapper.tickTimer.stop();
                 if (wrapper.notification) {
                     wrapper.notification.dismiss();
                 }
@@ -226,12 +206,14 @@ Singleton {
         }
     }
 
-    // Limpa todas
     function clearAll() {
         const toRemove = notifications.slice();
         for (const wrapper of toRemove) {
-            if (wrapper && wrapper.notification) {
-                wrapper.notification.dismiss();
+            if (wrapper) {
+                wrapper.tickTimer.stop();
+                if (wrapper.notification) {
+                    wrapper.notification.dismiss();
+                }
             }
         }
     }
@@ -241,25 +223,19 @@ Singleton {
     // ========================================================================
 
     function getIconSource(appIcon, image) {
-        // Prioridade 1: imagem inline da notificação
         if (image && image !== "") {
-            if (image.startsWith("/")) {
+            if (image.startsWith("/"))
                 return "file://" + image;
-            }
-            if (image.startsWith("file://") || image.startsWith("image://")) {
+            if (image.startsWith("file://") || image.startsWith("image://"))
                 return image;
-            }
             return image;
         }
 
-        // Prioridade 2: ícone do aplicativo
         if (appIcon && appIcon !== "") {
-            if (appIcon.startsWith("/")) {
+            if (appIcon.startsWith("/"))
                 return "file://" + appIcon;
-            }
-            if (appIcon.startsWith("file://") || appIcon.startsWith("image://")) {
+            if (appIcon.startsWith("file://") || appIcon.startsWith("image://"))
                 return appIcon;
-            }
             return "image://icon/" + appIcon;
         }
 

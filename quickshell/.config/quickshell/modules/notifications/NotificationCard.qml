@@ -39,8 +39,13 @@ Item {
     readonly property bool showPopup: wrapper ? wrapper.popup : false
     readonly property string timeStr: wrapper ? wrapper.timeStr : ""
 
+    // Progresso do timer (0.0 a 1.0) - vem direto do wrapper
+    readonly property real progress: wrapper ? wrapper.progress : 0.0
+
+    // Verifica se está pausado (hover)
+    readonly property bool isPaused: wrapper && wrapper.isPaused
+
     // Filtra ações que não devem ser mostradas como botões
-    // "default" e "activate" são ações especiais que geralmente não têm label útil
     readonly property var visibleActions: {
         if (!actions || actions.length === 0)
             return [];
@@ -54,17 +59,13 @@ Item {
             const identifier = (action.identifier || "").toLowerCase();
             const text = action.text || "";
 
-            // Pula ações sem texto útil ou com identificadores especiais sem texto
             if (identifier === "default" && text === "")
                 continue;
             if (identifier === "activate" && text === "")
                 continue;
-
-            // Pula se o texto é igual ao identificador (comum em ações mal formatadas)
             if (text.toLowerCase() === identifier && (identifier === "default" || identifier === "activate"))
                 continue;
 
-            // Se tem texto, mostra
             if (text !== "") {
                 filtered.push(action);
             }
@@ -74,7 +75,6 @@ Item {
 
     readonly property bool hasVisibleActions: visibleActions && visibleActions.length > 0
 
-    // Obtém o label da ação (usa text, ou fallback para identifier formatado)
     function getActionLabel(action) {
         if (!action)
             return "";
@@ -83,12 +83,10 @@ Item {
         if (text !== "")
             return text;
 
-        // Fallback: formata o identifier
         const id = action.identifier || "";
         if (id === "")
             return "Abrir";
 
-        // Capitaliza primeira letra
         return id.charAt(0).toUpperCase() + id.slice(1);
     }
 
@@ -110,42 +108,6 @@ Item {
     }
 
     visible: !isCollapsed && (popupMode ? showPopup : true) && opacity > 0 && wrapper !== null
-
-    // ========================================================================
-    // PROGRESSO DO TIMER (para barra de progresso)
-    // ========================================================================
-
-    property real timeProgress: 0.0
-
-    // Verifica se o timer do wrapper está rodando
-    readonly property bool timerRunning: wrapper && wrapper.timer && wrapper.timer.running
-    readonly property int timerInterval: wrapper && wrapper.timer ? wrapper.timer.interval : Config.notifTimeout
-
-    // Verifica se está pausado (hover)
-    readonly property bool isPaused: wrapper && wrapper.isPaused
-
-    // Animação de progresso
-    NumberAnimation on timeProgress {
-        id: progressAnim
-        from: 0.0
-        to: 1.0
-        duration: root.timerInterval
-        running: root.popupMode && root.showPopup && !root.isExiting && root.wrapper !== null && root.timerRunning
-        // Só pausa se a animação estiver realmente rodando
-        paused: running && root.isPaused
-        onFinished: root.startExitAnimation(false)
-    }
-
-    // Reseta o progresso quando o timer reinicia
-    Connections {
-        target: wrapper ? wrapper.timer : null
-        function onRunningChanged() {
-            if (wrapper && wrapper.timer && wrapper.timer.running) {
-                root.timeProgress = 0;
-                progressAnim.restart();
-            }
-        }
-    }
 
     // ========================================================================
     // VISUAL
@@ -178,13 +140,13 @@ Item {
             color: Config.surface0Color
         }
 
-        // Barra de progresso (só no modo popup quando não pausado)
+        // Barra de progresso (só no modo popup)
         Rectangle {
-            visible: root.popupMode && !(wrapper && wrapper.isPaused)
+            visible: root.popupMode
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             height: 3
-            width: parent.width * (1.0 - root.timeProgress)
+            width: parent.width * (1.0 - root.progress)
             color: root.isUrgent ? Config.errorColor : Config.accentColor
         }
 
@@ -307,65 +269,6 @@ Item {
                     }
                 }
             }
-
-            // --- AINDA NÃO IMPLEMENTADO POR COMPLETO, PARA TENTAR FAZER DEPOIS ---
-            // // Botões de Ação
-            // RowLayout {
-            //     id: actionRow
-            //     visible: root.hasVisibleActions
-            //     Layout.fillWidth: true
-            //     spacing: 8
-            //
-            //     Repeater {
-            //         model: root.visibleActions
-            //
-            //         delegate: Rectangle {
-            //             id: actionDelegate
-            //
-            //             required property var modelData
-            //             required property int index
-            //
-            //             Layout.fillWidth: true
-            //             Layout.preferredHeight: 30
-            //             radius: Config.radiusSmall
-            //             color: actionMouse.containsMouse ? Config.surface2Color : Config.surface1Color
-            //
-            //             Behavior on color {
-            //                 ColorAnimation {
-            //                     duration: Config.animDurationShort
-            //                 }
-            //             }
-            //
-            //             Text {
-            //                 anchors.centerIn: parent
-            //                 text: root.getActionLabel(actionDelegate.modelData)
-            //                 font.family: Config.font
-            //                 font.pixelSize: Config.fontSizeSmall
-            //                 color: Config.textColor
-            //                 elide: Text.ElideRight
-            //             }
-            //
-            //             MouseArea {
-            //                 id: actionMouse
-            //                 anchors.fill: parent
-            //                 hoverEnabled: true
-            //                 cursorShape: Qt.PointingHandCursor
-            //                 onClicked: {
-            //                     // Invoca a ação diretamente no objeto nativo
-            //                     if (actionDelegate.modelData && typeof actionDelegate.modelData.invoke === "function") {
-            //                         console.log("[Notif] Invocando ação:", actionDelegate.modelData.identifier || actionDelegate.modelData.text);
-            //                         actionDelegate.modelData.invoke();
-            //                     }
-            //
-            //                     // Se não for resident, fecha após invocar
-            //                     if (root.wrapper && root.wrapper.notification && !root.wrapper.notification.resident) {
-            //                         root.startExitAnimation(true);
-            //                     }
-            //                 }
-            //             }
-            //         }
-            //     }
-            // }
         }
     }
 
@@ -398,10 +301,8 @@ Item {
 
         onClicked: mouse => {
             if (mouse.button === Qt.RightButton) {
-                // Clique direito: remove completamente
                 root.startExitAnimation(true);
             } else {
-                // Clique esquerdo no modo popup: apenas esconde
                 if (root.popupMode) {
                     root.startExitAnimation(false);
                 }
@@ -460,7 +361,6 @@ Item {
                     NotificationService.expireNotification(id);
                 }
 
-                // Reset do estado visual
                 root.opacity = 1;
                 root.x = 0;
                 root.isCollapsed = false;

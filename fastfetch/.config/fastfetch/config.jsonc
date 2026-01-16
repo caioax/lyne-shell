@@ -1,65 +1,113 @@
 {
     "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
     "logo": {
-        "type": "small",
+        "source": "~/.config/fastfetch/arch.png",
+        "type": "kitty-icat",
+        "width": 25,
+        "height": 15,
         "padding": {
             "top": 1,
-            "left": 2,
-            "right": 5
-        },
-        "color": {
-            "1": "blue",
-            "2": "blue"
+            "right": 4,
+            "left": 0
         }
     },
     "display": {
-        "separator": "    ",
-        "color": "blue"
+        "separator": "  ",
+        "color": {
+            "keys": "blue"
+        }
     },
     "modules": [
         {
+            "key": "{#2}{#blue}╭───────────╮",
+            "type": "custom"
+        },
+        {
+            "key": "{#2}{#blue}│{#0} {#blue} {#white}user    {#2}{#blue}│",
             "type": "title",
-            "key": "  user     ",
-            "keyColor": "red",
-            "format": "{user-name}"
+            "format": "{#white}{#2}{#3}{user-name}{#0}"
         },
         {
-            "type": "os",
-            "key": "  distro   ",
-            "keyColor": "blue"
-        },
-        {
-            "type": "kernel",
-            "key": "  kernel   ",
-            "keyColor": "green"
-        },
-        {
-            "type": "terminal",
-            "key": "  term     ",
-            "keyColor": "red"
-        },
-        {
-            "type": "wm",
-            "key": "  wm       ",
-            "keyColor": "blue"
-        },
-        {
+            "key": "{#2}{#blue}│{#0} {#blue}󰅐 {#white}uptime  {#2}{#blue}│",
             "type": "uptime",
-            "key": "  uptime   ",
-            "keyColor": "yellow"
+            "format": "{#white}{#2}{#3}{days} days, {hours} hours, {minutes} mins{#0}"
+        },
+        {
+            "key": "{#2}{#blue}│{#0} {#blue} {#white}display {#2}{#blue}│",
+            "type": "display",
+            "format": "{#white}{#2}{#3}{width}x{height} @ {refresh-rate}Hz{#0}"
+        },
+        {
+            "key": "{#2}{#blue}│{#0} {#blue}󰣇 {#white}distro  {#2}{#blue}│",
+            "type": "os",
+            "format": "{#white}{#2}{#3}{pretty-name}{#0}"
+        },
+        {
+            "key": "{#2}{#blue}│{#0} {#blue} {#white}kernel  {#2}{#blue}│",
+            "type": "kernel",
+            "format": "{#white}{#2}{#3}{release}{#0}"
+        },
+        {
+            "key": "{#2}{#blue}│{#0} {#blue} {#white}wm      {#2}{#blue}│",
+            "type": "wm",
+            "format": "{#white}{#2}{#3}{pretty-name}{#0}"
+        },
+        {
+            "key": "{#2}{#blue}│{#0} {#blue}󰇄 {#white}desktop {#2}{#blue}│",
+            "type": "de",
+            "format": "{#white}{#2}{#3}{pretty-name}{#0}"
+        },
+        {
+            "key": "{#2}{#blue}│{#0} {#blue} {#white}term    {#2}{#blue}│",
+            "type": "terminal",
+            "format": "{#white}{#2}{#3}{pretty-name}{#0}"
+        },
+        {
+            "key": "{#2}{#blue}│{#0} {#blue} {#white}shell   {#2}{#blue}│",
+            "type": "shell",
+            "format": "{#white}{#2}{#3}{pretty-name}{#0}"
         },
         {
             "type": "command",
-            "key": "  os age   ",
-            "keyColor": "blue",
-            "text": "birth_install=$(stat -c %W /); current=$(date +%s); time_progression=$((current - birth_install)); days_difference=$((time_progression / 86400)); echo $days_difference days"
+            "key": "{#2}{#blue}│{#0} {#blue}󰏖 {#white}apps    {#2}{#blue}│",
+            "shell": "/bin/bash",
+            // Lógica: Conta pacman. Verifica se flatpak existe e conta. Monta a frase.
+            "text": "p=$(pacman -Qq | wc -l); echo -n \"$p (pacman)\"; if command -v flatpak >/dev/null; then f=$(flatpak list --app | wc -l); if [ \"$f\" -gt 0 ]; then echo -n \"   $f (flatpak)\"; fi; fi",
+            // Aplica a sua formatação de cor (Branco + Escuro + Itálico) no resultado
+            "format": "{#white}{#2}{#3}{result}{#0}"
         },
         {
+            "key": "{#2}{#blue}│{#0} {#blue}󰉉 {#white}disk    {#2}{#blue}│",
+            "type": "disk",
+            "folders": "/",
+            "format": "{#white}{#2}{#3}{size-used} / {size-total} {#0}{#3}({size-percentage})"
+        },
+        {
+            "key": "{#2}{#blue}│{#0} {#blue} {#white}memory  {#2}{#blue}│",
+            "type": "memory",
+            "format": "{#white}{#2}{#3}{used} / {total} {#0}{#3}({percentage})"
+        },
+        {
+            "type": "command",
+            "key": "{#2}{#blue}│{#0} {#blue}󱦟 {#white}os age  {#2}{#blue}│",
+            "text": "birth_install=$(stat -c %W /); current=$(date +%s); time_progression=$((current - birth_install)); days_difference=$((time_progression / 86400)); echo $days_difference days",
+            "format": "{#white}{#2}{#3}{result}{#0}"
+        },
+        {
+            "key": "{#2}{#blue}├───────────┤",
+            "type": "custom"
+        },
+        {
+            "key": "{#2}{#blue}│{#0} {#blue} {#white}colors  {#2}{#blue}│",
             "type": "colors",
-            "key": "  colors   ",
-            "keyColor": "green",
             "symbol": "circle"
         },
-        "break"
+        {
+            "key": "{#2}{#blue}╰───────────╯",
+            "type": "custom"
+        },
+        {
+            "type": "break"
+        }
     ]
 }

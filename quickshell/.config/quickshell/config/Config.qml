@@ -26,7 +26,8 @@ Singleton {
     readonly property color subtextReverseColor: "#4f5863" // Texto secundário oposto
 
     // Cores de Estado e Destaque
-    readonly property color accentColor: "#7d9bba"         // Azul (Foco principal)
+    // readonly property color accentColor: "#7d9bba"         // Azul (Foco principal)
+    readonly property color accentColor: "#6F92E0"         // Azul (Foco principal)
     readonly property color successColor: "#8ccf7e"        // Verde
     readonly property color warningColor: "#e5c07b"        // Amarelo
     readonly property color errorColor: "#d95e5e"          // Vermelho

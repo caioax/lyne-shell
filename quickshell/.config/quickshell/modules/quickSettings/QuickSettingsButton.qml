@@ -46,8 +46,8 @@ Rectangle {
         id: quickSettingsWindow
 
         anchor.item: root
-        anchor.edges: Edges.Bottom | Edges.Right
-        anchor.gravity: Edges.Bottom | Edges.Left
+        anchor.edges: Edges.Bottom
+        anchor.gravity: Edges.Bottom
         anchor.rect: Qt.rect(0, 0, root.width, root.height + 10)
 
         visible: false

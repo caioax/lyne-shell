@@ -15,8 +15,8 @@ Item {
         id: notifWindow
 
         anchor.item: root
-        anchor.edges: Edges.Bottom | Edges.Right
-        anchor.gravity: Edges.Bottom | Edges.Left
+        anchor.edges: Edges.Bottom
+        anchor.gravity: Edges.Bottom
         anchor.rect: Qt.rect(0, 0, root.width, root.height + 10)
 
         visible: false
@@ -52,17 +52,26 @@ Item {
         // Badge de contagem
         Rectangle {
             visible: NotificationService.count > 0
-            width: 8
-            height: 8
-            radius: 4
-            color: Config.errorColor
-            border.width: 1
-            border.color: Config.backgroundColor
-
             anchors.top: parent.top
             anchors.right: parent.right
-            anchors.topMargin: 2
-            anchors.rightMargin: 2
+            anchors.topMargin: -2
+            anchors.rightMargin: -2
+
+            width: Math.max(14, badgeText.implicitWidth + 6)
+            height: 14
+            radius: 7
+
+            color: Config.errorColor
+
+            Text {
+                id: badgeText
+                anchors.centerIn: parent
+                text: NotificationService.count > 99 ? "99+" : NotificationService.count.toString()
+                font.family: Config.font
+                font.pixelSize: 9
+                font.bold: true
+                color: Config.textColor
+            }
         }
 
         MouseArea {

@@ -3,10 +3,10 @@
     "logo": {
         "source": "~/.config/fastfetch/arch.png",
         "type": "kitty-icat",
-        "width": 25,
+        "width": 30,
         "height": 15,
         "padding": {
-            "top": 1,
+            "top": 0,
             "right": 4,
             "left": 0
         }

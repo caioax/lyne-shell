@@ -1,29 +1,3 @@
-# === SMART TMUX START ===
-# Verifica se o tmux está instalado e se não estamos já dentro de uma sessão
-if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-    # Define o nome da sessão principal
-    SESSION_NAME="main"
-
-    # Verifica se a sessão 'main' existe
-    if tmux has-session -t $SESSION_NAME 2>/dev/null; then
-        # Verifica se a sessão 'main' já tem alguém conectado (attached)
-        if tmux list-sessions | grep -q "^$SESSION_NAME.*(attached)"; then
-            # Se já está aberta em outro lugar, cria uma nova sessão independente
-            ID=1
-            while tmux has-session -t $ID 2>/dev/null; do
-                ((ID++))
-            done 
-            exec tmux new-session -s $ID
-        else
-            # Se existe mas ninguém está usando, conecta nela
-            exec tmux attach-session -t $SESSION_NAME
-        fi
-    else
-        # Se a sessão 'main' não existe, cria ela
-        exec tmux new-session -s $SESSION_NAME
-    fi
-fi
-
 # === POWERLEVEL10K INSTANT PROMPT ===
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -40,7 +14,7 @@ ZSH_TMUX_DEFAULT_SESSION_NAME="main"
 ZSH_TMUX_UNICODE=true
 
 # --- Plugins List ---
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting zsh-vi-mode tmux)
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting zsh-vi-mode)
 
 source $ZSH/oh-my-zsh.sh
 

@@ -2,7 +2,7 @@
 
 -- Permite que o Neovim altere o título da janela do terminal
 vim.opt.title = true
-vim.opt.titlelen = 0 -- Não trunca nativamente (deixa nossa lógica controlar)
+vim.opt.titlelen = 0
 
 local function set_window_title()
 	-- Pega o nome do arquivo atual e o tipo

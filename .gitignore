@@ -1,5 +1,6 @@
 *.log
 .qmlls.ini
+state.json
 
 hyprland/.config/hypr/local/*
 !hyprland/.config/hypr/local/.gitkeep

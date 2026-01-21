@@ -114,14 +114,14 @@ PopupWindow {
                         Layout.preferredWidth: 40
                         Layout.preferredHeight: 40
                         radius: Config.radius
-                        color: Config.surface1Color
+                        color: NotificationService.dndEnabled ? Qt.alpha(Config.warningColor, 0.2) : Config.surface1Color
 
                         Text {
                             anchors.centerIn: parent
-                            text: "󰂚"
+                            text: NotificationService.dndEnabled ? "󰂛" : "󰂚"
                             font.family: Config.font
                             font.pixelSize: 20
-                            color: Config.accentColor
+                            color: NotificationService.dndEnabled ? Config.warningColor : Config.accentColor
                         }
                     }
 
@@ -139,17 +139,71 @@ PopupWindow {
                         }
 
                         Text {
-                            visible: NotificationService.count > 0
-                            text: NotificationService.count + (NotificationService.count === 1 ? " notificação" : " notificações")
+                            visible: NotificationService.count > 0 || NotificationService.dndEnabled
+                            text: {
+                                if (NotificationService.dndEnabled)
+                                    return "Não perturbe ativo";
+                                return NotificationService.count + (NotificationService.count === 1 ? " notificação" : " notificações");
+                            }
                             font.family: Config.font
                             font.pixelSize: Config.fontSizeSmall
-                            color: Config.subtextColor
+                            color: NotificationService.dndEnabled ? Config.warningColor : Config.subtextColor
                         }
                     }
 
                     // Espaçador
                     Item {
                         Layout.fillWidth: true
+                    }
+
+                    // Botão DND Toggle
+                    Rectangle {
+                        id: dndBtn
+                        Layout.preferredHeight: 32
+                        Layout.preferredWidth: dndContent.implicitWidth + 16
+                        radius: Config.radius
+                        color: {
+                            if (NotificationService.dndEnabled)
+                                return Config.warningColor;
+                            if (dndMouse.containsMouse)
+                                return Config.surface2Color;
+                            return Config.surface1Color;
+                        }
+
+                        Behavior on color {
+                            ColorAnimation {
+                                duration: Config.animDurationShort
+                            }
+                        }
+
+                        RowLayout {
+                            id: dndContent
+                            anchors.centerIn: parent
+                            spacing: 6
+
+                            Text {
+                                text: NotificationService.dndEnabled ? "󰂛" : "󰂚"
+                                font.family: Config.font
+                                font.pixelSize: 14
+                                color: NotificationService.dndEnabled ? Config.textReverseColor : Config.subtextColor
+                            }
+
+                            Text {
+                                text: "DND"
+                                font.family: Config.font
+                                font.pixelSize: Config.fontSizeSmall
+                                font.bold: true
+                                color: NotificationService.dndEnabled ? Config.textReverseColor : Config.subtextColor
+                            }
+                        }
+
+                        MouseArea {
+                            id: dndMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: NotificationService.toggleDnd()
+                        }
                     }
 
                     // Botão Limpar Tudo
@@ -283,30 +337,30 @@ PopupWindow {
                             width: 64
                             height: 64
                             radius: 32
-                            color: Config.surface1Color
+                            color: NotificationService.dndEnabled ? Qt.alpha(Config.warningColor, 0.2) : Config.surface1Color
 
                             Text {
                                 anchors.centerIn: parent
-                                text: "󰂜"
+                                text: NotificationService.dndEnabled ? "󰂛" : "󰂜"
                                 font.family: Config.font
                                 font.pixelSize: 28
-                                color: Config.subtextColor
-                                opacity: 0.5
+                                color: NotificationService.dndEnabled ? Config.warningColor : Config.subtextColor
+                                opacity: NotificationService.dndEnabled ? 1.0 : 0.5
                             }
                         }
 
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
-                            text: "Nenhuma notificação"
+                            text: NotificationService.dndEnabled ? "Modo Não Perturbe" : "Nenhuma notificação"
                             font.family: Config.font
                             font.pixelSize: Config.fontSizeNormal
-                            color: Config.subtextColor
+                            color: NotificationService.dndEnabled ? Config.warningColor : Config.subtextColor
                             opacity: 0.7
                         }
 
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
-                            text: "Você está em dia!"
+                            text: NotificationService.dndEnabled ? "Notificações silenciadas" : "Você está em dia!"
                             font.family: Config.font
                             font.pixelSize: Config.fontSizeSmall
                             color: Config.subtextColor

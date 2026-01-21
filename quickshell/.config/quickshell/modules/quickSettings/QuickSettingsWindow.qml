@@ -104,8 +104,6 @@ PopupWindow {
             anchors.centerIn: parent
             color: Config.backgroundColor
             radius: Config.radiusLarge
-            // border.width: 1
-            // border.color: Config.surface2Color
             clip: true
 
             transformOrigin: Item.TopRight
@@ -169,6 +167,13 @@ PopupWindow {
                 // PÁGINA 3: BLUETOOTH
                 // ==========================
                 BluetoothPage {
+                    onBackRequested: pageStack.currentIndex = 0
+                }
+
+                // ==========================
+                // PÁGINA 4: LUZ NOTURNA
+                // ==========================
+                NightLightPage {
                     onBackRequested: pageStack.currentIndex = 0
                 }
             }

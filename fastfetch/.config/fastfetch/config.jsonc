@@ -33,11 +33,6 @@
             "format": "{#white}{#2}{#3}{days} days, {hours} hours, {minutes} mins{#0}"
         },
         {
-            "key": "{#2}{#blue}│{#0} {#blue} {#white}display {#2}{#blue}│",
-            "type": "display",
-            "format": "{#white}{#2}{#3}{width}x{height} @ {refresh-rate}Hz{#0}"
-        },
-        {
             "key": "{#2}{#blue}│{#0} {#blue}󰣇 {#white}distro  {#2}{#blue}│",
             "type": "os",
             "format": "{#white}{#2}{#3}{pretty-name}{#0}"

@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Io
 import "./modules/bar/"
 import "./modules/notifications/"
+import "./modules/power/"
 
 ShellRoot {
     id: root
@@ -28,4 +29,6 @@ ShellRoot {
     }
 
     NotificationOverlay {}
+
+    PowerOverlay {}
 }

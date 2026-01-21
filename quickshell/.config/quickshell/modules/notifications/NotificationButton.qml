@@ -40,18 +40,25 @@ Item {
             }
         }
 
-        // Ícone (Sino)
+        // Ícone (Sino) - sempre branco na barra
         Text {
             anchors.centerIn: parent
-            text: NotificationService.count > 0 ? "󰂚" : "󰂜"
+            text: {
+                if (NotificationService.dndEnabled)
+                    return "󰂛";
+                if (NotificationService.count > 0)
+                    return "󰂚";
+                return "󰂜";
+            }
             font.family: Config.font
             font.pixelSize: Config.fontSizeLarge
+            // Cor sempre branca na barra, só muda se a janela estiver aberta
             color: notifWindow.visible ? Config.accentColor : Config.textColor
         }
 
         // Badge de contagem
         Rectangle {
-            visible: NotificationService.count > 0
+            visible: NotificationService.count > 0 && !NotificationService.dndEnabled
             anchors.top: parent.top
             anchors.right: parent.right
             anchors.topMargin: -2
@@ -74,12 +81,35 @@ Item {
             }
         }
 
+        // Indicador de DND (pequeno ponto) - só quando DND ativo
+        Rectangle {
+            visible: NotificationService.dndEnabled && NotificationService.count === 0
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.topMargin: -2
+            anchors.rightMargin: -2
+
+            width: 8
+            height: 8
+            radius: 4
+
+            color: Config.warningColor
+        }
+
         MouseArea {
             id: mouseArea
             anchors.fill: parent
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
-            onClicked: notifWindow.visible = !notifWindow.visible
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            
+            onClicked: mouse => {
+                if (mouse.button === Qt.RightButton) {
+                    NotificationService.toggleDnd();
+                } else {
+                    notifWindow.visible = !notifWindow.visible;
+                }
+            }
         }
     }
 }

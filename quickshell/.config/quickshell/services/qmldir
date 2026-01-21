@@ -7,3 +7,6 @@ singleton NetworkService NetworkService.qml
 singleton TrayService TrayService.qml
 singleton MprisService MprisService.qml
 singleton NotificationService NotificationService.qml
+singleton BrightnessService BrightnessService.qml
+singleton PowerService PowerService.qml
+singleton StateService StateService.qml

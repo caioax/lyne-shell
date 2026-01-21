@@ -9,6 +9,41 @@ Singleton {
     id: root
 
     // ========================================================================
+    // DND (DO NOT DISTURB)
+    // ========================================================================
+
+    property bool dndEnabled: false
+
+    function toggleDnd() {
+        dndEnabled = !dndEnabled;
+        
+        if (dndEnabled) {
+            // Quando DND é ativado, remove todos os popups ativos
+            for (let i = 0; i < notifications.length; i++) {
+                if (notifications[i] && notifications[i].popup) {
+                    notifications[i].popup = false;
+                    notifications[i].tickTimer.stop();
+                }
+            }
+        }
+    }
+
+    function setDnd(enabled: bool) {
+        if (dndEnabled !== enabled) {
+            dndEnabled = enabled;
+            if (enabled) {
+                // Remove popups ativos
+                for (let i = 0; i < notifications.length; i++) {
+                    if (notifications[i] && notifications[i].popup) {
+                        notifications[i].popup = false;
+                        notifications[i].tickTimer.stop();
+                    }
+                }
+            }
+        }
+    }
+
+    // ========================================================================
     // LISTAS DE NOTIFICAÇÕES
     // ========================================================================
 
@@ -41,15 +76,23 @@ Singleton {
 
             notif.tracked = true;
 
+            // Se DND está ativo, não mostra popup mas ainda guarda no histórico
+            const showPopup = !root.dndEnabled;
+
             const wrapper = notifComponent.createObject(root, {
-                "popup": true,
+                "popup": showPopup,
                 "notification": notif
             });
 
             if (wrapper) {
                 root.notifications.push(wrapper);
-                wrapper.startLifecycle();
-                console.log("[Notif] Wrapper criado. Total:", root.notifications.length, "Popups:", root.popups.length);
+                
+                // Só inicia o lifecycle (timer) se não estiver em DND
+                if (showPopup) {
+                    wrapper.startLifecycle();
+                }
+                
+                console.log("[Notif] Wrapper criado. Total:", root.notifications.length, "Popups:", root.popups.length, "DND:", root.dndEnabled);
             }
         }
     }

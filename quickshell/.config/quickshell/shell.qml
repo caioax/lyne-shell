@@ -4,12 +4,15 @@ import Quickshell.Io
 import Quickshell.Hyprland
 import qs.services
 import "./modules/bar/"
-import "./modules/notifications/"
-import "./modules/power/"
-import "./modules/screenshot/"
 
 ShellRoot {
     id: root
+
+    // =========================================================================
+    // ESTADO GLOBAL DOS MÓDULOS
+    // =========================================================================
+
+    property bool screenshotActive: false
 
     // =========================================================================
     // BLUETOOTH AGENT
@@ -31,20 +34,60 @@ ShellRoot {
     }
 
     // =========================================================================
-    // COMPONENTES DA UI
+    // COMPONENTES DA UI - LAZY LOADING
     // =========================================================================
 
+    // Bar - sempre ativo (componente principal)
+    Bar {}
+
+    // Notifications - carrega sob demanda quando há notificações
     Loader {
-        active: true
-        sourceComponent: Bar {}
+        id: notificationLoader
+        active: NotificationService.activePopupCount > 0 || NotificationService.popups.length > 0
+        source: "./modules/notifications/NotificationOverlay.qml"
+
+        onStatusChanged: {
+            if (status === Loader.Ready)
+                console.log("[Shell] NotificationOverlay carregado");
+        }
     }
 
-    NotificationOverlay {}
-    PowerOverlay {}
+    // Power Overlay - carrega sob demanda quando solicitado
+    Loader {
+        id: powerLoader
+        active: PowerService.overlayVisible
+        source: "./modules/power/PowerOverlay.qml"
 
-    // Screenshot Manager
-    ScreenshotManager {
-        id: screenshotManager
+        onStatusChanged: {
+            if (status === Loader.Ready)
+                console.log("[Shell] PowerOverlay carregado");
+        }
+    }
+
+    // Screenshot Manager - carrega sob demanda
+    Loader {
+        id: screenshotLoader
+        active: root.screenshotActive
+        source: "./modules/screenshot/ScreenshotManager.qml"
+
+        onStatusChanged: {
+            if (status === Loader.Ready) {
+                console.log("[Shell] ScreenshotManager carregado");
+                screenshotLoader.item.startCapture();
+            }
+        }
+
+        // Desativa quando o screenshot termina
+        Connections {
+            target: screenshotLoader.item
+            enabled: screenshotLoader.status === Loader.Ready
+
+            function onActiveChanged() {
+                if (screenshotLoader.item && !screenshotLoader.item.active) {
+                    root.screenshotActive = false;
+                }
+            }
+        }
     }
 
     // =========================================================================
@@ -58,7 +101,7 @@ ShellRoot {
 
         onPressed: {
             console.log("[Shell] Screenshot solicitado");
-            screenshotManager.startCapture();
+            root.screenshotActive = true;
         }
     }
 

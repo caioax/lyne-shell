@@ -115,6 +115,16 @@ ShellRoot {
     // ATALHOS GLOBAIS
     // =========================================================================
 
+    // Atalho: Recarregar quickshell
+    GlobalShortcut {
+        name: "reload_shell"
+        description: "Recarregar shell"
+
+        onPressed: {
+            StateService.reload();
+        }
+    }
+
     // Atalho: Screenshot (Print)
     GlobalShortcut {
         name: "take_screenshot"

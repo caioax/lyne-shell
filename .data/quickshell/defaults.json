@@ -1,0 +1,55 @@
+{
+  "nightLight": {
+    "enabled": false,
+    "intensity": 0.5
+  },
+  "bar": {
+    "autoHide": true,
+    "height": 32
+  },
+  "palette": {
+    "background": "#1a1b26",
+    "surface0": "#24283b",
+    "surface1": "#292e42",
+    "surface2": "#414868",
+    "surface3": "#565f89",
+    "text": "#c0caf5",
+    "textReverse": "#1a1b26",
+    "subtext": "#a9b1d6",
+    "subtextReverse": "#565f89",
+    "accent": "#7aa2f7",
+    "success": "#9ece6a",
+    "warning": "#e0af68",
+    "error": "#f7768e",
+    "muted": "#545c7e",
+    "greyBlue": "#283457",
+    "blueDark": "#16161e"
+  },
+  "geometry": {
+    "radiusSmall": 5,
+    "radius": 10,
+    "radiusLarge": 15,
+    "spacing": 8,
+    "padding": 6
+  },
+  "typography": {
+    "font": "Caskaydia Cove Nerd Font",
+    "sizeSmall": 12,
+    "sizeNormal": 14,
+    "sizeLarge": 16,
+    "iconSmall": 18,
+    "icon": 22,
+    "iconLarge": 28
+  },
+  "animations": {
+    "short": 100,
+    "normal": 200,
+    "long": 400
+  },
+  "notifications": {
+    "width": 350,
+    "imageSize": 40,
+    "timeout": 5000,
+    "spacing": 10
+  }
+}

@@ -3,81 +3,75 @@ pragma ComponentBehavior: Bound
 
 import Quickshell
 import QtQuick
+import qs.services
 
 Singleton {
     id: root
 
-    // ========================================================================
-    // TOKYO NIGHT COLOR PALETTE
-    // ========================================================================
-
-    // General Background (Bars, Menus)
-    readonly property color backgroundColor: "#1a1b26" // Main window background
-    readonly property color surface0Color: "#24283b"   // Slightly lighter background for grouping
-    readonly property color surface1Color: "#292e42"   // Inactive tab or secondary element background
-    readonly property color surface2Color: "#414868"   // Selection, highlight, or default hover state
-    readonly property color surface3Color: "#565f89"   // Active borders or hover state for highlighted elements
-
-    // Text
-    readonly property color textColor: "#c0caf5"           // Foreground
-    readonly property color textReverseColor: "#1a1b26"    // Background color for inverted text
-
-    // Subtext
-    readonly property color subtextColor: "#a9b1d6"        // Color 7 (Lower contrast text)
-    readonly property color subtextReverseColor: "#565f89" // Comment color
-
-    // State and Highlight Colors
-    readonly property color accentColor: "#7aa2f7"         // Blue (Active Tab / Focus)
-    readonly property color successColor: "#9ece6a"        // Green
-    readonly property color warningColor: "#e0af68"        // Yellow
-    readonly property color errorColor: "#f7768e"          // Red
-
-    // Specific Colors (Semantic Mapping)
-    readonly property color mutedColor: "#545c7e"          // Inactive foreground
-    readonly property color activeColor: "#c0caf5"         // Main foreground
-
-    // Others (Extra variants from Tokyo Night)
-    readonly property color greyBlueColor: "#283457"       // Selection background
-    readonly property color blueDarkColor: "#16161e"       // Darker background variant
+    // Helper function para encurtar a chamada do serviço
+    function conf(path, fallback) {
+        return StateService.get(path, fallback);
+    }
 
     // ========================================================================
-    // GEOMETRY AND LAYOUT
+    // PALETTE (Cores do Tokyo Night)
     // ========================================================================
+    readonly property color backgroundColor: conf("palette.background", "#1a1b26")
+    readonly property color surface0Color: conf("palette.surface0", "#24283b")
+    readonly property color surface1Color: conf("palette.surface1", "#292e42")
+    readonly property color surface2Color: conf("palette.surface2", "#414868")
+    readonly property color surface3Color: conf("palette.surface3", "#565f89")
 
-    readonly property int barHeight: 32
-    readonly property int radiusSmall: 5
-    readonly property int radius: 10
-    readonly property int radiusLarge: 15
-    readonly property int spacing: 8
-    readonly property int padding: 6
+    readonly property color textColor: conf("palette.text", "#c0caf5")
+    readonly property color textReverseColor: conf("palette.textReverse", "#1a1b26")
+    readonly property color subtextColor: conf("palette.subtext", "#a9b1d6")
+    readonly property color subtextReverseColor: conf("palette.subtextReverse", "#565f89")
+
+    readonly property color accentColor: conf("palette.accent", "#7aa2f7")
+    readonly property color successColor: conf("palette.success", "#9ece6a")
+    readonly property color warningColor: conf("palette.warning", "#e0af68")
+    readonly property color errorColor: conf("palette.error", "#f7768e")
+
+    readonly property color mutedColor: conf("palette.muted", "#545c7e")
+    readonly property color greyBlueColor: conf("palette.greyBlue", "#283457")
+    readonly property color blueDarkColor: conf("palette.blueDark", "#16161e")
+
+    // ========================================================================
+    // GEOMETRY & LAYOUT
+    // ========================================================================
+    readonly property int barHeight: conf("bar.height", 32)
+    readonly property bool barAutoHide: conf("bar.autoHide", true)
+
+    readonly property int radiusSmall: conf("geometry.radiusSmall", 5)
+    readonly property int radius: conf("geometry.radius", 10)
+    readonly property int radiusLarge: conf("geometry.radiusLarge", 15)
+    readonly property int spacing: conf("geometry.spacing", 8)
+    readonly property int padding: conf("geometry.padding", 6)
 
     // ========================================================================
     // TYPOGRAPHY
     // ========================================================================
+    readonly property string font: conf("typography.font", "Caskaydia Cove Nerd Font")
 
-    readonly property string font: "Caskaydia Cove Nerd Font"
-
-    readonly property int fontSizeSmall: 12
-    readonly property int fontSizeNormal: 14
-    readonly property int fontSizeLarge: 16
-    readonly property int fontSizeIconSmall: 18
-    readonly property int fontSizeIcon: 22
-    readonly property int fontSizeIconLarge: 28
+    readonly property int fontSizeSmall: conf("typography.sizeSmall", 12)
+    readonly property int fontSizeNormal: conf("typography.sizeNormal", 14)
+    readonly property int fontSizeLarge: conf("typography.sizeLarge", 16)
+    readonly property int fontSizeIconSmall: conf("typography.iconSmall", 18)
+    readonly property int fontSizeIcon: conf("typography.icon", 22)
+    readonly property int fontSizeIconLarge: conf("typography.iconLarge", 28)
 
     // ========================================================================
     // ANIMATIONS
     // ========================================================================
-
-    readonly property int animDurationShort: 100
-    readonly property int animDuration: 200
-    readonly property int animDurationLong: 400
+    readonly property int animDurationShort: conf("animations.short", 100)
+    readonly property int animDuration: conf("animations.normal", 200)
+    readonly property int animDurationLong: conf("animations.long", 400)
 
     // ========================================================================
     // NOTIFICATIONS
     // ========================================================================
-
-    readonly property int notifWidth: 350
-    readonly property int notifImageSize: 40
-    readonly property int notifTimeout: 5000
-    readonly property int notifSpacing: 10
+    readonly property int notifWidth: conf("notifications.width", 350)
+    readonly property int notifImageSize: conf("notifications.imageSize", 40)
+    readonly property int notifTimeout: conf("notifications.timeout", 5000)
+    readonly property int notifSpacing: conf("notifications.spacing", 10)
 }

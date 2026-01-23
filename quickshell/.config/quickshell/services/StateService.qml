@@ -8,130 +8,85 @@ import Quickshell.Io
 Singleton {
     id: root
 
-    // ========================================================================
-    // PROPRIEDADES
-    // ========================================================================
-
-    // Caminho do arquivo de estado
     readonly property string statePath: Quickshell.env("HOME") + "/.config/quickshell/state.json"
+    readonly property string defaultsPath: Quickshell.env("HOME") + "/.arch-dots/.data/quickshell/defaults.json"
 
-    // Estado atual (objeto JS)
     property var state: ({})
-
-    // Flag para evitar salvar durante carregamento
     property bool isLoading: true
 
-    // ========================================================================
-    // INICIALIZAÇÃO
-    // ========================================================================
+    Component.onCompleted: loadState()
 
-    Component.onCompleted: {
-        loadState();
+    // --- Reload Function ---
+    function reload() {
+        console.log("[StateService] Saving and reloading shell...");
+        saveState();
+        Quickshell.reload([]);
     }
 
-    // ========================================================================
-    // FUNÇÕES PÚBLICAS
-    // ========================================================================
-
-    // Obtém um valor do estado
-    function get(key: string, defaultValue) {
-        if (state.hasOwnProperty(key)) {
-            return state[key];
-        }
-        return defaultValue;
-    }
-
-    // Define um valor no estado e salva
-    function set(key: string, value) {
-        state[key] = value;
-        if (!isLoading) {
-            saveState();
-        }
-    }
-
-    // Remove uma chave do estado
-    function remove(key: string) {
-        if (state.hasOwnProperty(key)) {
-            delete state[key];
-            if (!isLoading) {
-                saveState();
+    // --- Dot Notation Functions ---
+    function get(path: string, defaultValue) {
+        const keys = path.split('.');
+        let current = state;
+        for (const key of keys) {
+            if (current !== null && typeof current === 'object' && key in current) {
+                current = current[key];
+            } else {
+                return defaultValue;
             }
         }
+        return current;
     }
 
-    // Força o salvamento
-    function save() {
-        saveState();
+    function set(path: string, value) {
+        const keys = path.split('.');
+        let current = state;
+        for (let i = 0; i < keys.length - 1; i++) {
+            const key = keys[i];
+            if (!(key in current) || typeof current[key] !== 'object')
+                current[key] = {};
+            current = current[key];
+        }
+        current[keys[keys.length - 1]] = value;
+        if (!isLoading)
+            saveState();
     }
 
-    // ========================================================================
-    // FUNÇÕES INTERNAS
-    // ========================================================================
-
+    // --- IO Logic ---
     function loadState() {
         isLoading = true;
         loadProc.running = true;
     }
 
     function saveState() {
-        // Converte o estado para JSON
         const jsonStr = JSON.stringify(state, null, 2);
-        saveProc.command = ["bash", "-c", 
-            "mkdir -p \"$(dirname '" + statePath + "')\" && " +
-            "echo '" + jsonStr.replace(/'/g, "'\\''") + "' > '" + statePath + "'"
-        ];
+        saveProc.command = ["bash", "-c", "mkdir -p \"$(dirname '" + statePath + "')\" && " + "echo '" + jsonStr.replace(/'/g, "'\\''") + "' > '" + statePath + "'"];
         saveProc.running = true;
     }
 
-    // ========================================================================
-    // PROCESSOS
-    // ========================================================================
-
-    // Carrega o estado do arquivo
     Process {
         id: loadProc
-        command: ["bash", "-c", "cat '" + root.statePath + "' 2>/dev/null || echo '{}'"]
-        
+        command: ["bash", "-c", "cat '" + root.statePath + "' 2>/dev/null || cat '" + root.defaultsPath + "' 2>/dev/null || echo '{}'"]
+
         property string buffer: ""
-        
         stdout: SplitParser {
-            onRead: data => {
-                loadProc.buffer += data + "\n";
-            }
+            onRead: data => loadProc.buffer += data
         }
-        
+
         onExited: (exitCode, exitStatus) => {
             try {
-                const parsed = JSON.parse(loadProc.buffer.trim());
-                root.state = parsed;
-                console.log("[State] Loaded state:", JSON.stringify(root.state));
+                root.state = JSON.parse(loadProc.buffer.trim());
             } catch (e) {
-                console.error("[State] Failed to parse state file:", e);
+                console.error("[StateService] JSON Parse Error:", e);
                 root.state = {};
             }
             root.isLoading = false;
             loadProc.buffer = "";
-            
-            // Emite sinal de que o estado foi carregado
             root.stateLoaded();
         }
     }
 
-    // Salva o estado no arquivo
     Process {
         id: saveProc
-        onExited: (exitCode, exitStatus) => {
-            if (exitCode === 0) {
-                console.log("[State] State saved successfully");
-            } else {
-                console.error("[State] Failed to save state, exit code:", exitCode);
-            }
-        }
     }
-
-    // ========================================================================
-    // SINAIS
-    // ========================================================================
-
-    signal stateLoaded()
+    signal stateLoaded
 }

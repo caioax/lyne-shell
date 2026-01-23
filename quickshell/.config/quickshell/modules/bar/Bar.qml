@@ -21,7 +21,7 @@ Scope {
         PanelWindow {
             required property var modelData
 
-            property bool enableAutoHide: true
+            property bool enableAutoHide: StateService.get("bar.autoHide", false)
 
             // NameSpace
             WlrLayershell.namespace: "qs_modules"

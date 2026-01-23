@@ -291,35 +291,11 @@ full_install() {
     if [[ " ${CATEGORIES[*]} " =~ " terminal " ]]; then
         setup_zsh
         setup_tmux
-        init_zsh_plugins
     fi
 
     # Habilitar serviços
     if [[ " ${CATEGORIES[*]} " =~ " utils " ]]; then
         setup_services
-    fi
-}
-
-# =============================================================================
-# Inicializar plugins do Zsh (Oh-My-Zsh)
-# =============================================================================
-init_zsh_plugins() {
-    log_header "Inicializando Zsh e Oh-My-Zsh"
-
-    log_step "Executando Zsh para instalar Oh-My-Zsh e plugins..."
-    log_info "Isso pode levar alguns segundos..."
-
-    # Executar zsh em modo não-interativo para instalar oh-my-zsh e plugins
-    # O .zshrc já tem lógica para instalar automaticamente se não existir
-    if command -v zsh &>/dev/null; then
-        # Usar timeout para evitar que fique preso se houver algum problema
-        timeout 120 zsh -c 'source ~/.zshrc; exit' 2>/dev/null || {
-            log_warn "Timeout ou erro ao inicializar Zsh"
-            log_info "Oh-My-Zsh será instalado na primeira vez que você abrir um terminal"
-        }
-        log_info "Zsh inicializado!"
-    else
-        log_warn "Zsh não encontrado. Instale primeiro."
     fi
 }
 

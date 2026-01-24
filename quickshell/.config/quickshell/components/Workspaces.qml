@@ -10,22 +10,20 @@ Item {
     id: root
 
     // --- Sizing Properties ---
-    readonly property int widthSize: 15
-    readonly property int heightSize: 15
-    readonly property int widthSizeActive: 30
-    readonly property int heightSizeActive: 18
+    readonly property int itemWidth: 15
+    readonly property int itemHeight: 15
+    readonly property int activeWidth: 30
+    readonly property int activeHeight: 18
     readonly property int itemSpacing: 4
-    readonly property int visibleCount: 5
+    readonly property int visibleCount: 9
     readonly property int totalWorkspaces: 99
-    readonly property int activeWidthDelta: widthSizeActive - widthSize
-    readonly property int bufferCount: 3
 
     // --- Calculated Dimensions ---
-    readonly property real viewportWidth: (widthSize * visibleCount) + activeWidthDelta + (itemSpacing * (visibleCount - 1))
-    readonly property real itemStep: widthSize + itemSpacing
+    readonly property real viewportWidth: (itemWidth * visibleCount) + (activeWidth - itemWidth) + (itemSpacing * (visibleCount - 1))
+    readonly property real itemStep: itemWidth + itemSpacing
 
     implicitWidth: isSpecialWorkspace ? specialIndicator.width : viewportWidth
-    implicitHeight: heightSizeActive + 4
+    implicitHeight: activeHeight + 4
 
     // --- Special Workspaces Config ---
     readonly property var specialWorkspaces: ({
@@ -40,7 +38,7 @@ Item {
                 name: "Music"
             },
             "magic": {
-                icon: "",
+                icon: "",
                 color: Config.warningColor,
                 name: "Magic"
             }
@@ -76,16 +74,14 @@ Item {
         return Math.max(1, Math.min(relative, totalWorkspaces));
     }
 
-    readonly property int targetIndex: Math.max(0, Math.min(relativeActiveId - 1, totalWorkspaces - 1))
+    // --- Scroll Logic (clamped at edges) ---
+    readonly property int targetIndex: relativeActiveId - 1
 
-    // --- Scrolling Logic ---
     readonly property real targetScrollX: {
-        if (activeId < 1)
-            return animatedScrollX;
-        let idealX = (targetIndex * itemStep) - (viewportWidth / 2) + (widthSizeActive / 2);
-        let minX = 0;
-        let maxX = (totalWorkspaces * itemStep) - itemSpacing - viewportWidth + activeWidthDelta;
-        return Math.max(minX, Math.min(idealX, maxX));
+        let centerOffset = Math.floor(visibleCount / 2);
+        let maxScrollIndex = totalWorkspaces - visibleCount;
+        let firstVisible = Math.max(0, Math.min(targetIndex - centerOffset, maxScrollIndex));
+        return firstVisible * itemStep;
     }
 
     property real animatedScrollX: targetScrollX
@@ -97,21 +93,10 @@ Item {
         }
     }
 
-    // --- Visibility Virtualization ---
-    readonly property int firstVisibleIndex: Math.max(0, Math.floor(animatedScrollX / itemStep) - bufferCount)
-    readonly property int lastVisibleIndex: Math.min(totalWorkspaces - 1, Math.ceil((animatedScrollX + viewportWidth) / itemStep) + bufferCount)
-
-    readonly property var visibleIndices: {
-        let indices = [];
-        for (let i = firstVisibleIndex; i <= lastVisibleIndex; i++)
-            indices.push(i);
-        return indices;
-    }
-
-    function calculateItemX(itemIndex: int): real {
-        let baseX = itemIndex * itemStep;
-        return (itemIndex > targetIndex) ? (baseX + activeWidthDelta) : baseX;
-    }
+    // --- Visibility range for hybrid virtualization ---
+    readonly property int renderBuffer: 10
+    readonly property int renderStart: Math.max(0, targetIndex - renderBuffer)
+    readonly property int renderEnd: Math.min(totalWorkspaces - 1, targetIndex + renderBuffer)
 
     // --- IPC Listeners ---
     Connections {
@@ -141,7 +126,7 @@ Item {
         visible: root.isSpecialWorkspace
         opacity: visible ? 1 : 0
         width: specialContent.width + Config.padding * 3
-        height: root.heightSizeActive
+        height: root.activeHeight
         anchors.verticalCenter: parent.verticalCenter
         radius: Config.radius
         color: root.currentSpecialConfig?.color ?? Config.accentColor
@@ -163,6 +148,7 @@ Item {
             id: specialContent
             anchors.centerIn: parent
             spacing: Config.padding * 0.8
+
             Text {
                 text: root.currentSpecialConfig?.icon ?? "󰀘"
                 font {
@@ -172,6 +158,7 @@ Item {
                 color: Config.textReverseColor
                 anchors.verticalCenter: parent.verticalCenter
             }
+
             Text {
                 text: root.currentSpecialConfig?.name ?? root.specialWorkspaceName
                 font {
@@ -187,7 +174,8 @@ Item {
         TapHandler {
             onTapped: {
                 let wsName = root.specialWorkspaceName;
-                if (wsName) Hyprland.dispatch("togglespecialworkspace " + wsName);
+                if (wsName)
+                    Hyprland.dispatch("togglespecialworkspace " + wsName);
             }
         }
 
@@ -195,6 +183,7 @@ Item {
             id: specialHover
             cursorShape: Qt.PointingHandCursor
         }
+
         scale: specialHover.hovered ? 0.95 : 1.0
         Behavior on scale {
             NumberAnimation {
@@ -223,30 +212,38 @@ Item {
         Item {
             id: container
             x: -root.animatedScrollX
-            width: (root.totalWorkspaces * root.itemStep) + root.activeWidthDelta
+            width: (root.totalWorkspaces * root.itemStep) + (root.activeWidth - root.itemWidth)
             height: parent.height
 
+            // Modelo numérico fixo - delegates são reusados, não recriados
             Repeater {
-                model: root.visibleIndices
+                model: root.totalWorkspaces
+
                 delegate: Rectangle {
                     id: workspaceItem
-                    required property int modelData
-                    readonly property int index: modelData
+                    required property int index
+
                     readonly property int workspaceId: root.monitorOffset + index + 1
                     readonly property bool isActive: workspaceId === root.activeId && !root.isSpecialWorkspace
                     readonly property var wsObject: Hyprland.workspaces.values?.find(ws => ws.id === workspaceId) ?? undefined
                     readonly property bool isEmpty: wsObject === undefined
 
-                    x: root.calculateItemX(index)
-                    anchors.verticalCenter: parent.verticalCenter // Fixed vertical jumping
+                    // Hybrid virtualization: renderiza só os próximos do ativo
+                    readonly property bool shouldRender: index >= root.renderStart && index <= root.renderEnd
+                    visible: shouldRender
 
-                    width: isActive ? root.widthSizeActive : root.widthSize
-                    height: isActive ? root.heightSizeActive : root.heightSize
+                    x: {
+                        let baseX = index * root.itemStep;
+                        return (index > root.targetIndex) ? baseX + (root.activeWidth - root.itemWidth) : baseX;
+                    }
+
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: isActive ? root.activeWidth : root.itemWidth
+                    height: isActive ? root.activeHeight : root.itemHeight
                     radius: Config.radius
 
                     color: isActive ? Config.accentColor : (!isEmpty ? Config.surface3Color : Config.surface1Color)
 
-                    // Unified animations
                     Behavior on x {
                         NumberAnimation {
                             duration: Config.animDurationShort
@@ -274,12 +271,13 @@ Item {
                             Hyprland.dispatch("workspace " + targetId);
                         }
                     }
+
                     HoverHandler {
-                        id: h
-                        cursorShape: !isActive ? Qt.PointingHandCursor : Qt.ArrowCursor
+                        id: hoverHandler
+                        cursorShape: !workspaceItem.isActive ? Qt.PointingHandCursor : Qt.ArrowCursor
                     }
 
-                    opacity: h.hovered && !isActive ? 0.7 : 1.0
+                    opacity: hoverHandler.hovered && !isActive ? 0.7 : 1.0
                     Behavior on opacity {
                         NumberAnimation {
                             duration: Config.animDuration

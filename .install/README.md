@@ -13,7 +13,7 @@ Scripts de instalação organizados para as dotfiles.
 │   ├── apps.sh         # Dolphin, Zen Browser, Spotify
 │   ├── utils.sh        # Clipboard, audio, bluetooth
 │   ├── fonts.sh        # Nerd Fonts, cursores, ícones
-│   ├── quickshell.sh   # QuickShell bar
+│   ├── quickshell.sh   # QuickShell
 │   ├── theming.sh      # Qt/GTK theming
 │   └── nvidia.sh       # Drivers NVIDIA (opcional)
 └── setup/              # Scripts de configuração
@@ -50,17 +50,17 @@ Scripts de instalação organizados para as dotfiles.
 
 ## Categorias de Pacotes
 
-| Categoria   | Descrição                                    |
-|-------------|----------------------------------------------|
-| core        | Hyprland, UWSM, swww, portal (ESSENCIAL)     |
-| terminal    | Kitty, Zsh, Tmux, Fastfetch                  |
-| editor      | Neovim + ferramentas de desenvolvimento      |
-| apps        | Dolphin, Zen Browser, Spotify, Rofi          |
-| utils       | Clipboard, audio, bluetooth, brightnessctl   |
-| fonts       | Nerd Fonts, Bibata cursor, Tela icons        |
-| quickshell  | QuickShell bar/shell + Qt6                   |
-| theming     | Qt5ct, Qt6ct, Kvantum, nwg-look              |
-| nvidia      | Drivers NVIDIA (instalar apenas se necessário)|
+| Categoria  | Descrição                                      |
+| ---------- | ---------------------------------------------- |
+| core       | Hyprland, UWSM, swww, portal (ESSENCIAL)       |
+| terminal   | Kitty, Zsh, Tmux, Fastfetch                    |
+| editor     | Neovim + ferramentas de desenvolvimento        |
+| apps       | Dolphin, Zen Browser, Spotify, Rofi            |
+| utils      | Clipboard, audio, bluetooth, brightnessctl     |
+| fonts      | Nerd Fonts, Bibata cursor, Tela icons          |
+| quickshell | QuickShell bar/shell + Qt6                     |
+| theming    | Qt5ct, Qt6ct, Kvantum, nwg-look                |
+| nvidia     | Drivers NVIDIA (instalar apenas se necessário) |
 
 ## Templates
 
@@ -82,14 +82,14 @@ Os templates NVIDIA do UWSM estão em `.data/hyprland/uwsm/`:
 
 O script `stow.sh` cria symlinks para:
 
-| Diretório   | Destino                        |
-|-------------|--------------------------------|
-| hyprland    | ~/.config/hypr                 |
-| quickshell  | ~/.config/quickshell           |
-| kitty       | ~/.config/kitty                |
-| nvim        | ~/.config/nvim                 |
-| zsh         | ~/.zshrc, ~/.p10k.zsh          |
-| tmux        | ~/.tmux.conf                   |
-| local       | ~/.local/scripts               |
-| fastfetch   | ~/.config/fastfetch            |
-| kde         | ~/.config/kdeglobals           |
+| Diretório  | Destino               |
+| ---------- | --------------------- |
+| hyprland   | ~/.config/hypr        |
+| quickshell | ~/.config/quickshell  |
+| kitty      | ~/.config/kitty       |
+| nvim       | ~/.config/nvim        |
+| zsh        | ~/.zshrc, ~/.p10k.zsh |
+| tmux       | ~/.tmux.conf          |
+| local      | ~/.local/scripts      |
+| fastfetch  | ~/.config/fastfetch   |
+| kde        | ~/.config/kdeglobals  |

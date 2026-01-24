@@ -60,7 +60,94 @@ create_dirs() {
 }
 
 # =============================================================================
-# Fazer backup de configs existentes
+# Obter destinos do stow para cada diretório
+# =============================================================================
+get_stow_targets() {
+    local dir=$1
+    local targets=()
+
+    case "$dir" in
+        "zsh")
+            targets+=("$HOME/.zshrc" "$HOME/.p10k.zsh")
+            ;;
+        "tmux")
+            targets+=("$HOME/.tmux.conf")
+            ;;
+        "local")
+            targets+=("$HOME/.local/scripts" "$HOME/.local/wallpapers")
+            ;;
+        "kde")
+            targets+=("$HOME/.config/kdeglobals")
+            ;;
+        *)
+            targets+=("$HOME/.config/${dir}")
+            ;;
+    esac
+
+    echo "${targets[@]}"
+}
+
+# =============================================================================
+# Remover destinos existentes com confirmação
+# =============================================================================
+remove_existing_targets() {
+    log_info "Verificando destinos existentes..."
+
+    local ITEMS_TO_REMOVE=()
+
+    # Coletar todos os itens existentes
+    for dir in "${STOW_DIRS[@]}"; do
+        local targets
+        targets=($(get_stow_targets "$dir"))
+
+        for target in "${targets[@]}"; do
+            if [[ -e "$target" || -L "$target" ]]; then
+                ITEMS_TO_REMOVE+=("$target")
+            fi
+        done
+    done
+
+    # Se não há itens para remover, retornar
+    if [[ ${#ITEMS_TO_REMOVE[@]} -eq 0 ]]; then
+        log_info "Nenhum destino existente encontrado."
+        return 0
+    fi
+
+    # Mostrar itens encontrados
+    echo ""
+    log_warn "Os seguintes arquivos/pastas de destino foram encontrados:"
+    echo ""
+    for item in "${ITEMS_TO_REMOVE[@]}"; do
+        if [[ -L "$item" ]]; then
+            echo -e "  ${CYAN}[symlink]${NC} $item"
+        elif [[ -d "$item" ]]; then
+            echo -e "  ${YELLOW}[pasta]${NC}   $item"
+        else
+            echo -e "  ${GREEN}[arquivo]${NC} $item"
+        fi
+    done
+    echo ""
+
+    # Pedir confirmação
+    echo -ne "${RED}Deseja REMOVER todos esses itens para criar os novos symlinks? [y/N]: ${NC}"
+    read -r confirm
+
+    if [[ $confirm =~ ^[Yy]$ ]]; then
+        log_info "Removendo destinos existentes..."
+        for item in "${ITEMS_TO_REMOVE[@]}"; do
+            if [[ -e "$item" || -L "$item" ]]; then
+                log_step "  Removendo: $item"
+                rm -rf "$item"
+            fi
+        done
+        log_info "Destinos removidos com sucesso!"
+    else
+        log_warn "Remoção cancelada. O stow tentará usar --adopt para conflitos."
+    fi
+}
+
+# =============================================================================
+# Fazer backup de configs existentes (legado - mantido para compatibilidade)
 # =============================================================================
 backup_existing() {
     local BACKUP_DIR="$HOME/.config-backup-$(date +%Y%m%d-%H%M%S)"
@@ -170,7 +257,7 @@ run_stow_main() {
     fi
 
     create_dirs
-    backup_existing
+    remove_existing_targets
     execute_stow
 
     echo ""

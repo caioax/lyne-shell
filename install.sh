@@ -257,6 +257,37 @@ setup_services() {
     fi
 }
 
+setup_wallpaper() {
+    log_header "Configurando Wallpaper Inicial"
+
+    local WALLPAPER="$HOME/.local/wallpapers/bash.png"
+
+    # Verificar se swww está instalado
+    if ! command -v swww &>/dev/null; then
+        log_warn "swww não está instalado. Pulando configuração de wallpaper."
+        return 0
+    fi
+
+    # Verificar se o wallpaper existe
+    if [[ ! -f "$WALLPAPER" ]]; then
+        log_warn "Wallpaper não encontrado: $WALLPAPER"
+        log_info "O wallpaper será aplicado após criar os symlinks."
+        return 0
+    fi
+
+    log_step "Iniciando swww daemon..."
+    # Iniciar daemon se não estiver rodando
+    if ! pgrep -x "swww-daemon" &>/dev/null; then
+        swww-daemon &
+        sleep 1
+    fi
+
+    log_step "Aplicando wallpaper: bash.png"
+    swww img "$WALLPAPER" --transition-type fade --transition-duration 1
+
+    log_info "Wallpaper configurado com sucesso!"
+}
+
 # =============================================================================
 # Instalação completa
 # =============================================================================
@@ -296,6 +327,11 @@ full_install() {
     # Habilitar serviços
     if [[ " ${CATEGORIES[*]} " =~ " utils " ]]; then
         setup_services
+    fi
+
+    # Configurar wallpaper inicial
+    if [[ " ${CATEGORIES[*]} " =~ " core " ]]; then
+        setup_wallpaper
     fi
 }
 

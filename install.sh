@@ -257,6 +257,25 @@ setup_services() {
     fi
 }
 
+setup_mimetypes() {
+    log_header "Configurando Aplicativos Padrão (MIME)"
+
+    if command -v dolphin &>/dev/null; then
+        log_step "Definindo Dolphin como gerenciador de arquivos padrão..."
+
+        # Define o Dolphin para abrir diretórios
+        xdg-mime default org.kde.dolphin.desktop inode/directory
+
+        # Atualiza o banco de dados de serviços do KDE
+        if command -v kbuildsycoca6 &>/dev/null; then
+            log_step "Atualizando cache de serviços do KDE..."
+            kbuildsycoca6 >/dev/null 2>&1
+        fi
+    else
+        log_warn "Dolphin não encontrado. Pulando configuração de MIME types."
+    fi
+}
+
 setup_wallpaper() {
     log_header "Configurando Wallpaper Inicial"
 

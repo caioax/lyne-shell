@@ -130,7 +130,7 @@ Item {
 
     Timer {
         id: occupiedUpdateTimer
-        interval: 100
+        interval: 10
         onTriggered: root.updateOccupiedWorkspaces()
     }
 
@@ -166,7 +166,7 @@ Item {
         visible: opacity > 0
         anchors.centerIn: parent
 
-        // A opacidade agora depende apenas se o estado é especial
+        // A opacidade depende apenas se o estado é especial
         opacity: root.isSpecialWorkspace ? (h.hovered ? 0.8 : 1.0) : 0
 
         scale: root.isSpecialWorkspace ? 1.0 : 0.9
@@ -178,10 +178,8 @@ Item {
         height: root.activeHeight
         radius: Config.radius
 
-        // Usa a cor cacheada para não piscar na saída
         color: root.cachedColor
         border.width: 1
-        border.color: Qt.rgba(255, 255, 255, 0.1)
 
         Behavior on opacity {
             NumberAnimation {

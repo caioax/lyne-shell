@@ -279,7 +279,15 @@ setup_mimetypes() {
 setup_wallpaper() {
     log_header "Configurando Wallpaper Inicial"
 
-    local WALLPAPER="$HOME/.local/wallpapers/Background2.png"
+    local CURRENT_FILE="$HOME/.local/wallpapers/.current"
+    local WALLPAPER
+    if [[ -f "$CURRENT_FILE" ]]; then
+        WALLPAPER="$(cat "$CURRENT_FILE")"
+    fi
+    # Fallback para o padrão se .current não existe ou aponta para arquivo inexistente
+    if [[ -z "$WALLPAPER" || ! -f "$WALLPAPER" ]]; then
+        WALLPAPER="$HOME/.local/wallpapers/water.png"
+    fi
 
     # Verificar se swww está instalado
     if ! command -v swww &>/dev/null; then
@@ -313,7 +321,7 @@ setup_wallpaper() {
         return 0
     fi
 
-    log_step "Aplicando wallpaper: bash.png"
+    log_step "Aplicando wallpaper"
     if swww img "$WALLPAPER" --transition-type grow --transition-duration 2 2>/dev/null; then
         log_info "Wallpaper configurado com sucesso!"
     else

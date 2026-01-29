@@ -9,6 +9,10 @@ hyprland/.config/hypr/local/*
 hyprland/.config/uwsm/env.d/*
 !hyprland/.config/uwsm/env.d/.gitkeep
 
+# Wallpapers locais (copiados de .data/wallpapers/ na instalação)
+local/.local/wallpapers/*
+!local/.local/wallpapers/.gitkeep
+
 # Monitor e workspace configs (específicos da máquina)
 # Esses arquivos são criados pelo script de instalação
 # e podem ser editados pelo usuário ou pelo nwg-displays/workspace-manager

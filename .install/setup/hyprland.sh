@@ -254,6 +254,48 @@ EOF
 }
 
 # =============================================================================
+# Configurar wallpapers
+# =============================================================================
+setup_wallpapers() {
+    echo ""
+    log_info "Configurando wallpapers..."
+
+    local WALLPAPERS_DIR="$HOME/.local/wallpapers"
+    local WALLPAPERS_DATA="$DOTFILES_DIR/.data/wallpapers"
+    local CURRENT_FILE="$WALLPAPERS_DIR/.current"
+
+    mkdir -p "$WALLPAPERS_DIR"
+
+    # Copiar wallpapers iniciais se a pasta estiver vazia (ignora .gitkeep e .current)
+    local file_count
+    file_count=$(find "$WALLPAPERS_DIR" -maxdepth 1 -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' -o -name '*.webp' -o -name '*.gif' \) 2>/dev/null | wc -l)
+
+    if [[ "$file_count" -eq 0 ]]; then
+        if [[ -d "$WALLPAPERS_DATA" ]]; then
+            find "$WALLPAPERS_DATA" -maxdepth 1 -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' -o -name '*.webp' -o -name '*.gif' \) -exec cp -n {} "$WALLPAPERS_DIR/" \;
+            log_info "  Wallpapers iniciais copiados de .data/wallpapers/"
+        else
+            log_warn "  Diretório de wallpapers iniciais não encontrado: $WALLPAPERS_DATA"
+        fi
+    else
+        log_warn "  Pulando (wallpapers já existem): $WALLPAPERS_DIR"
+    fi
+
+    # Criar arquivo .current com wallpaper padrão
+    if [[ ! -f "$CURRENT_FILE" ]]; then
+        if [[ -f "$WALLPAPERS_DATA/.current" ]]; then
+            # Substituir /home/caio pelo $HOME real do usuário
+            sed "s|/home/caio|$HOME|g" "$WALLPAPERS_DATA/.current" > "$CURRENT_FILE"
+        else
+            echo "$WALLPAPERS_DIR/Background2.png" > "$CURRENT_FILE"
+        fi
+        log_info "  Criado: .current (wallpaper padrão)"
+    else
+        log_warn "  Pulando (já existe): .current"
+    fi
+}
+
+# =============================================================================
 # Main (para execução direta)
 # =============================================================================
 run_hyprland_main() {
@@ -268,6 +310,7 @@ run_hyprland_main() {
     setup_workspaces
     setup_local_configs
     setup_quickshell
+    setup_wallpapers
 
     if ask_nvidia; then
         setup_nvidia
@@ -289,6 +332,7 @@ run_hyprland_main() {
     echo "  - ~/.config/uwsm/env.d/global_hardware.sh"
     echo "  - ~/.config/uwsm/env.d/hyprland_hardware.sh"
     echo "  - ~/.config/quickshell/state.json"
+    echo "  - ~/.local/wallpapers/ (wallpapers + .current)"
     echo ""
     log_info "Use 'nwg-displays' para configurar seus monitores."
     log_info "O workspace-manager.sh regenerará workspaces.conf automaticamente."

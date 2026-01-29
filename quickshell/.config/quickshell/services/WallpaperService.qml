@@ -100,6 +100,10 @@ Singleton {
         ];
         setWallpaperProc.running = true;
 
+        // Salvar wallpaper atual no arquivo .current para persistência
+        saveCurrentProc.command = ["bash", "-c", "echo '" + path + "' > '" + root.wallpaperDir + "/.current'"];
+        saveCurrentProc.running = true;
+
         currentWallpaper = path;
         hide();
     }
@@ -234,6 +238,10 @@ Singleton {
                 }
             }
         }
+    }
+
+    Process {
+        id: saveCurrentProc
     }
 
     Process {

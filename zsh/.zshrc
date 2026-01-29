@@ -112,5 +112,5 @@ shell-state() {
 }
 
 # === ALIASES ===
-alias all-update='sudo pacman -Syu && yay -Syu && flatpak update'
+alias all-update='sudo pacman -Syu; yay -Syu; flatpak update'
 alias dots='git -C ~/.arch-dots'

@@ -12,29 +12,34 @@ Scope {
 
     // Icons for each type (Nerd Font)
     readonly property var icons: ({
-        "volume_off": "󰖁",
-        "volume_low": "󰕿",
-        "volume_medium": "󰖀",
-        "volume_high": "󰕾",
-        "mute": "󰝟",
-        "brightness_low": "󰃞",
-        "brightness_medium": "󰃟",
-        "brightness_high": "󰃠"
-    })
+            "volume_off": "󰖁",
+            "volume_low": "󰕿",
+            "volume_medium": "󰖀",
+            "volume_high": "󰕾",
+            "mute": "󰝟",
+            "brightness_low": "󰃞",
+            "brightness_medium": "󰃟",
+            "brightness_high": "󰃠"
+        })
 
     function getIcon(): string {
         if (OsdService.type === "mute" || OsdService.muted) {
             return icons.mute;
         }
         if (OsdService.type === "brightness") {
-            if (OsdService.value < 0.3) return icons.brightness_low;
-            if (OsdService.value < 0.6) return icons.brightness_medium;
+            if (OsdService.value < 0.3)
+                return icons.brightness_low;
+            if (OsdService.value < 0.6)
+                return icons.brightness_medium;
             return icons.brightness_high;
         }
         // Volume
-        if (OsdService.value < 0.01) return icons.volume_off;
-        if (OsdService.value < 0.33) return icons.volume_low;
-        if (OsdService.value < 0.66) return icons.volume_medium;
+        if (OsdService.value < 0.01)
+            return icons.volume_off;
+        if (OsdService.value < 0.33)
+            return icons.volume_low;
+        if (OsdService.value < 0.66)
+            return icons.volume_medium;
         return icons.volume_high;
     }
 
@@ -72,7 +77,7 @@ Scope {
                 width: 280
                 height: 50
                 radius: Config.radiusLarge
-                color: Config.backgroundColor
+                color: Config.backgroundTransparentColor
                 border.color: Qt.alpha(Config.accentColor, 0.2)
                 border.width: 1
 

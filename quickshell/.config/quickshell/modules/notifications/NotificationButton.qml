@@ -10,14 +10,9 @@ Item {
     implicitWidth: Config.barHeight - 10
     implicitHeight: Config.barHeight - 10
 
-    // Popup Window
+    // Notification Window
     NotificationWindow {
         id: notifWindow
-
-        anchor.item: root
-        anchor.edges: Edges.Bottom
-        anchor.gravity: Edges.Bottom
-        anchor.rect: Qt.rect(0, 0, root.width, root.height + 10)
 
         visible: false
     }

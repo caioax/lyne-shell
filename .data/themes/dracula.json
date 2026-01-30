@@ -1,0 +1,65 @@
+{
+  "name": "Dracula",
+  "palette": {
+    "background": "#282a36",
+    "surface0": "#343746",
+    "surface1": "#3e4155",
+    "surface2": "#4d5066",
+    "surface3": "#6272a4",
+    "text": "#f8f8f2",
+    "textReverse": "#282a36",
+    "subtext": "#cdd1e0",
+    "subtextReverse": "#6272a4",
+    "accent": "#bd93f9",
+    "success": "#50fa7b",
+    "warning": "#f1fa8c",
+    "error": "#ff5555",
+    "muted": "#6272a4",
+    "greyBlue": "#343746",
+    "blueDark": "#21222c"
+  },
+  "opacity": {
+    "background": 0.9
+  },
+  "neovim": {
+    "colorscheme": "dracula"
+  },
+  "hyprland": {
+    "activeBorder": "bd93f9ff",
+    "inactiveBorder": "6272a4aa",
+    "shadowColor": "21222cee"
+  },
+  "terminal": {
+    "background": "#282a36",
+    "foreground": "#f8f8f2",
+    "selectionBackground": "#44475a",
+    "selectionForeground": "#f8f8f2",
+    "urlColor": "#8be9fd",
+    "cursor": "#f8f8f2",
+    "cursorTextColor": "#282a36",
+    "activeTabBackground": "#bd93f9",
+    "activeTabForeground": "#21222c",
+    "inactiveTabBackground": "#343746",
+    "inactiveTabForeground": "#6272a4",
+    "activeBorderColor": "#bd93f9",
+    "inactiveBorderColor": "#343746",
+    "color0": "#21222c",
+    "color1": "#ff5555",
+    "color2": "#50fa7b",
+    "color3": "#f1fa8c",
+    "color4": "#bd93f9",
+    "color5": "#ff79c6",
+    "color6": "#8be9fd",
+    "color7": "#f8f8f2",
+    "color8": "#6272a4",
+    "color9": "#ff6e6e",
+    "color10": "#69ff94",
+    "color11": "#ffffa5",
+    "color12": "#d6acff",
+    "color13": "#ff92df",
+    "color14": "#a4ffff",
+    "color15": "#ffffff",
+    "color16": "#ffb86c",
+    "color17": "#ff5555"
+  }
+}

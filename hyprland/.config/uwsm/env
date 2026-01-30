@@ -2,28 +2,28 @@
 # UWSM GLOBAL ENVIRONMENT VARIABLES
 # ==============================================================================
 
-# Força apps Electron (VSCode, Discord, Obsidian) a usar Wayland nativo
+# Forces Electron apps (VSCode, Discord, Obsidian) to use native Wayland
 export ELECTRON_OZONE_PLATFORM_HINT=auto
 
 # ------------------------------------------------------------------------------
 # XDG / SESSION IDENTIFICATION
-# Identifica a sessão para portais e gerenciadores
+# Identifies the session for portals and managers
 # ------------------------------------------------------------------------------
 export XDG_CURRENT_DESKTOP=Hyprland
 export XDG_SESSION_TYPE=wayland
 export XDG_SESSION_DESKTOP=Hyprland
 
-# Garante que menus de apps sigam o padrão do Arch
+# Ensures app menus follow the Arch standard
 export XDG_MENU_PREFIX=arch-
 
 # ------------------------------------------------------------------------------
 # TOOLKITS (GTK & QT)
-# Configurações visuais e de backend para interfaces gráficas
+# Visual and backend settings for graphical interfaces
 # ------------------------------------------------------------------------------
-# GTK: Prioriza Wayland, depois X11
+# GTK: Prioritizes Wayland, then X11
 export GDK_BACKEND="wayland,x11,*"
 
-# QT: Configurações para Qt6/Qt5
+# QT: Settings for Qt6/Qt5
 export QT_QPA_PLATFORM="wayland;xcb"
 export QT_QPA_PLATFORMTHEME=qt6ct
 export QT_AUTO_SCREEN_SCALE_FACTOR=1

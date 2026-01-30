@@ -111,6 +111,12 @@ ShellRoot {
         source: "./modules/wallpaper/WallpaperPicker.qml"
     }
 
+    // Clipboard History - loads on demand
+    Loader {
+        active: ClipboardService.visible
+        source: "./modules/clipboard/ClipboardHistory.qml"
+    }
+
     // =========================================================================
     // GLOBAL SHORTCUTS
     // =========================================================================
@@ -206,5 +212,13 @@ ShellRoot {
         description: "Wallpaper picker"
 
         onPressed: WallpaperService.toggle()
+    }
+
+    // Shortcut: Clipboard History
+    GlobalShortcut {
+        name: "clipboard_history"
+        description: "Clipboard history"
+
+        onPressed: ClipboardService.toggle()
     }
 }

@@ -1,15 +1,15 @@
--- INTEGRAÇÃO COM TMUX (Gerenciamento de Títulos)
+-- TMUX INTEGRATION (Title Management)
 
--- Permite que o Neovim altere o título da janela do terminal
+-- Allow Neovim to change the terminal window title
 vim.opt.title = true
 vim.opt.titlelen = 0
 
 local function set_window_title()
-	-- Pega o nome do arquivo atual e o tipo
+	-- Get the current file name and type
 	local filename = vim.fn.expand("%:t")
 	local filetype = vim.bo.filetype
 
-	-- Lógica para buffers especiais (que não são arquivos reais)
+	-- Logic for special buffers (not real files)
 	if filename == "" or filetype == "snacks_dashboard" then
 		if filetype == "neo-tree" then
 			filename = "explorer"
@@ -22,26 +22,26 @@ local function set_window_title()
 		end
 	end
 
-	-- Aplica o título
+	-- Apply the title
 	vim.opt.titlestring = filename
 end
 
--- Gatilhos: Atualiza o título ao entrar no buffer, trocar janela ou ganhar foco
+-- Triggers: Update the title when entering a buffer, switching windows or gaining focus
 vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "FocusGained", "VimResume" }, {
 	group = vim.api.nvim_create_augroup("tmux_window_title", { clear = true }),
 	callback = set_window_title,
 })
 
--- FEEDBACK VISUAL (UX)
+-- VISUAL FEEDBACK (UX)
 
--- Highlight on Yank: Faz o texto piscar ao ser copiado (y)
+-- Highlight on Yank: Flash the text when copied (y)
 vim.api.nvim_create_autocmd("TextYankPost", {
-	desc = "Piscar texto ao copiar (Yank)",
+	desc = "Flash text on yank",
 	group = vim.api.nvim_create_augroup("highlight_yank", { clear = true }),
 	callback = function()
 		vim.highlight.on_yank({
-			higroup = "IncSearch", -- A cor do destaque (IncSearch inverte as cores, dando alto contraste)
-			timeout = 150, -- Duração do efeito em milissegundos
+			higroup = "IncSearch", -- Highlight color (IncSearch inverts colors for high contrast)
+			timeout = 150, -- Effect duration in milliseconds
 		})
 	end,
 })

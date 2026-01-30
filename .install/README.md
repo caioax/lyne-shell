@@ -55,7 +55,7 @@ Organized installation scripts for the dotfiles.
 | core       | Hyprland, UWSM, swww, portal (ESSENTIAL)      |
 | terminal   | Kitty, Zsh, Tmux, Fastfetch                    |
 | editor     | Neovim + development tools                     |
-| apps       | Dolphin, Zen Browser, Spotify, Rofi            |
+| apps       | Dolphin, Zen Browser, Spotify, mpv              |
 | utils      | Clipboard, audio, bluetooth, brightnessctl     |
 | fonts      | Nerd Fonts, Bibata cursor, Tela icons          |
 | quickshell | QuickShell bar/shell + Qt6                     |

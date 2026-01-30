@@ -1,22 +1,22 @@
 return {
 	{
 		"hrsh7th/nvim-cmp",
-		-- Carrega quando entra no modo de inserção (evita pesar o boot)
+		-- Loads when entering insert mode (avoids slowing down boot)
 		event = { "InsertEnter", "CmdlineEnter" },
 		dependencies = {
-			"hrsh7th/cmp-nvim-lsp", -- Fonte: Inteligência do LSP
-			"hrsh7th/cmp-buffer", -- Fonte: Texto do arquivo atual
-			"hrsh7th/cmp-path", -- Fonte: Caminhos de arquivos
-			"hrsh7th/cmp-cmdline", -- Autocomplete no comando ":"
-			"L3MON4D3/LuaSnip", -- Engine de Snippets (Obrigatório)
-			"saadparwaiz1/cmp_luasnip", -- Conecta o LuaSnip no CMP
-			"rafamadriz/friendly-snippets", -- Coleção de snippets prontos
+			"hrsh7th/cmp-nvim-lsp", -- Source: LSP intelligence
+			"hrsh7th/cmp-buffer", -- Source: Current file text
+			"hrsh7th/cmp-path", -- Source: File paths
+			"hrsh7th/cmp-cmdline", -- Autocomplete for ":" command
+			"L3MON4D3/LuaSnip", -- Snippet engine (Required)
+			"saadparwaiz1/cmp_luasnip", -- Connects LuaSnip to CMP
+			"rafamadriz/friendly-snippets", -- Collection of ready-made snippets
 		},
 		config = function()
 			local cmp = require("cmp")
 			local luasnip = require("luasnip")
 
-			-- Carrega snippets estilo VSCode
+			-- Load VSCode-style snippets
 			require("luasnip.loaders.from_vscode").lazy_load()
 
 			cmp.setup({
@@ -32,11 +32,11 @@ return {
 				mapping = cmp.mapping.preset.insert({
 					["<C-b>"] = cmp.mapping.scroll_docs(-4),
 					["<C-f>"] = cmp.mapping.scroll_docs(4),
-					["<C-Space>"] = cmp.mapping.complete(), -- Força abrir o menu
-					["<C-e>"] = cmp.mapping.abort(), -- Cancela
-					["<CR>"] = cmp.mapping.confirm({ select = true }), -- Enter confirma
+					["<C-Space>"] = cmp.mapping.complete(), -- Force open menu
+					["<C-e>"] = cmp.mapping.abort(), -- Cancel
+					["<CR>"] = cmp.mapping.confirm({ select = true }), -- Enter confirms
 
-					-- Configuração do TAB para navegar no menu
+					-- TAB configuration to navigate the menu
 					["<Tab>"] = cmp.mapping(function(fallback)
 						if cmp.visible() then
 							cmp.select_next_item()
@@ -58,14 +58,14 @@ return {
 					end, { "i", "s" }),
 				}),
 				sources = cmp.config.sources({
-					{ name = "nvim_lsp" }, -- Prioridade alta: Inteligência do código
+					{ name = "nvim_lsp" }, -- High priority: Code intelligence
 					{ name = "luasnip" }, -- Snippets
-					{ name = "buffer" }, -- Palavras que já estão no texto
-					{ name = "path" }, -- Caminhos de pastas/arquivos
+					{ name = "buffer" }, -- Words already in the text
+					{ name = "path" }, -- Folder/file paths
 				}),
 			})
-			--- CONFIGURAÇÃO DA LINHA DE COMANDO (:) ---
-			-- Para busca (/ ou ?)
+			--- COMMAND LINE CONFIGURATION (:) ---
+			-- For search (/ or ?)
 			cmp.setup.cmdline({ "/", "?" }, {
 				mapping = cmp.mapping.preset.cmdline(),
 				sources = {
@@ -73,13 +73,13 @@ return {
 				},
 			})
 
-			-- Para comandos (:)
+			-- For commands (:)
 			cmp.setup.cmdline(":", {
 				mapping = cmp.mapping.preset.cmdline(),
 				sources = cmp.config.sources({
-					{ name = "path" }, -- Autocompleta caminhos de arquivos
+					{ name = "path" }, -- Autocomplete file paths
 				}, {
-					{ name = "cmdline" }, -- Autocompleta comandos
+					{ name = "cmdline" }, -- Autocomplete commands
 				}),
 				matching = { disallow_symbol_nonprefix_matching = false },
 			})

@@ -1,42 +1,42 @@
 return {
 	"folke/persistence.nvim",
-	event = "BufReadPre", -- Só carrega quando você abrir um arquivo
+	event = "BufReadPre", -- Only loads when you open a file
 	opts = {
-		-- Onde salvar as sessões (padrão é ~/.local/state/nvim/sessions)
+		-- Where to save sessions (default is ~/.local/state/nvim/sessions)
 		-- dir = vim.fn.expand(vim.fn.stdpath("state") .. "/sessions/"),
 
-		-- Mínimo de buffers abertos para salvar a sessão
+		-- Minimum open buffers to save the session
 		need = 1,
 
-		-- Salvar sessão baseada no branch do git? (Útil se trabalha em várias features)
+		-- Save session based on git branch? (Useful when working on multiple features)
 		branch = true,
 	},
 	keys = {
-		-- Atalho para restaurar a sessão do diretório atual
+		-- Shortcut to restore the session for the current directory
 		{
 			"<leader>qs",
 			function()
 				require("persistence").load()
 			end,
-			desc = "Restaurar Sessão",
+			desc = "Restore Session",
 		},
 
-		-- Atalho para restaurar a ÚLTIMA sessão que você usou (qualquer pasta)
+		-- Shortcut to restore the LAST session you used (any folder)
 		{
 			"<leader>ql",
 			function()
 				require("persistence").load({ last = true })
 			end,
-			desc = "Restaurar Última Sessão",
+			desc = "Restore Last Session",
 		},
 
-		-- Atalho para parar de gravar a sessão atual (útil para coisas rápidas)
+		-- Shortcut to stop recording the current session (useful for quick tasks)
 		{
 			"<leader>qd",
 			function()
 				require("persistence").stop()
 			end,
-			desc = "Não Salvar Sessão Atual",
+			desc = "Don't Save Current Session",
 		},
 	},
 }

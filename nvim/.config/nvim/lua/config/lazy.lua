@@ -13,7 +13,7 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
 	spec = {
-		{ import = "plugins" }, -- Importa tudo que estiver na pasta lua/plugins
+		{ import = "plugins" }, -- Import everything from the lua/plugins folder
 	},
-	checker = { enabled = true }, -- Verifica atualizações automaticamente
+	checker = { enabled = true }, -- Automatically check for updates
 })

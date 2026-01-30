@@ -30,6 +30,10 @@ Singleton {
             notifications: {
                 name: "notifications",
                 description: "Notification center"
+            },
+            clipboard: {
+                name: "clipboard_history",
+                description: "Clipboard history"
             }
         })
 
@@ -41,6 +45,7 @@ Singleton {
     signal powerMenuRequested
     signal quickSettingsRequested
     signal notificationsRequested
+    signal clipboardRequested
 
     // ========================================================================
     // PUBLIC FUNCTIONS
@@ -61,6 +66,9 @@ Singleton {
             break;
         case "notifications":
             notificationsRequested();
+            break;
+        case "clipboard_history":
+            clipboardRequested();
             break;
         default:
             console.warn("[Shortcuts] Unknown shortcut:", shortcutName);

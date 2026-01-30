@@ -11,22 +11,22 @@ return {
 	},
 	config = function()
 		require("neo-tree").setup({
-			-- Remove a borda padrão para criar o efeito de "Barra Lateral" limpa
+			-- Remove default border to create a clean "Sidebar" effect
 			popup_border_style = "rounded",
 			enable_git_status = true,
 			enable_diagnostics = true,
 
-			-- Configuração Visual
+			-- Visual Configuration
 			default_component_configs = {
 				indent = {
-					with_expanders = true, -- Mostra setinhas
+					with_expanders = true, -- Show arrows
 					expander_collapsed = "",
 					expander_expanded = "",
 					expander_highlight = "NeoTreeExpander",
 				},
 				git_status = {
 					symbols = {
-						-- Ícones mais limpos para o Git
+						-- Cleaner icons for Git
 						added = "✚",
 						modified = "",
 						deleted = "✖",
@@ -47,7 +47,7 @@ return {
 					["l"] = "open",
 					["h"] = "close_node",
 					["<space>"] = "none",
-					-- Atalhos extras úteis
+					-- Extra useful shortcuts
 					["Y"] = {
 						function(state)
 							local node = state.tree:get_node()
@@ -66,7 +66,7 @@ return {
 					hide_gitignored = false,
 				},
 				follow_current_file = { enabled = true },
-				use_libuv_file_watcher = true, -- Atualiza auto se mudar fora do nvim
+				use_libuv_file_watcher = true, -- Auto-update if changed outside nvim
 			},
 		})
 	end,

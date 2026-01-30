@@ -282,7 +282,7 @@ Item {
                     width: isActive ? root.activeWidth : root.itemWidth
                     height: isActive ? root.activeHeight : root.itemHeight
                     radius: Config.radius
-                    color: isActive ? Config.accentColor : (!isEmpty ? Config.surface3Color : Config.surface1Color)
+                    color: isActive ? Config.accentColor : (!isEmpty ? Config.surface3Color : Qt.alpha(Config.surface2Color, 0.65))
 
                     Behavior on x {
                         NumberAnimation {

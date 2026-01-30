@@ -1,30 +1,30 @@
 return {
   {
     "stevearc/conform.nvim",
-    event = { "BufWritePre" }, -- Carrega antes de salvar
+    event = { "BufWritePre" }, -- Loads before saving
     cmd = { "ConformInfo" },
     keys = {
       {
-        -- Atalho manual para formatar: Leader + mp
+        -- Manual format shortcut: Leader + mp
         "<leader>mp",
         function()
           require("conform").format({ async = true, lsp_fallback = true })
         end,
         mode = "",
-        desc = "Formatar buffer atual",
+        desc = "Format current buffer",
       },
     },
-    -- AQUI ESTÁ A CONFIGURAÇÃO QUE FALTAVA NO BLOCO CORRETO
+    -- HERE IS THE CONFIGURATION THAT WAS MISSING IN THE CORRECT BLOCK
     config = function()
       require("conform").setup({
-        -- Define quais formatadores usar para cada linguagem
+        -- Define which formatters to use for each language
         formatters_by_ft = {
           lua = { "stylua" },
 
           -- Python
           python = { "isort", "black" },
 
-          -- Web (Prettier para tudo)
+          -- Web (Prettier for everything)
           javascript = { "prettier" },
           typescript = { "prettier" },
           javascriptreact = { "prettier" },
@@ -40,9 +40,9 @@ return {
           bash = { "shfmt" },
         },
 
-        -- Configura o Format on Save
+        -- Configure Format on Save
         format_on_save = {
-          -- Se não tiver formatador (ex: C++, Rust), usa o LSP nativo
+          -- If no formatter is available (e.g. C++, Rust), use native LSP
           lsp_fallback = true,
           async = false,
           timeout_ms = 500,

@@ -137,7 +137,7 @@ Item {
         // Background
         Rectangle {
             anchors.fill: parent
-            color: Config.surface0Color
+            color: Config.backgroundTransparentColor
         }
 
         // Progress bar (only in popup mode)

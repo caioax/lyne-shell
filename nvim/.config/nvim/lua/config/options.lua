@@ -1,29 +1,29 @@
 local opt = vim.opt
 
-opt.number = true -- Mostra número da linha
-opt.relativenumber = true -- Números relativos
-opt.tabstop = 4 -- Tamanho do Tab
-opt.shiftwidth = 4 -- Tamanho da indentação
-opt.expandtab = true -- Converte Tab em Espaços
-opt.autoindent = true -- Mantém indentação na nova linha
-opt.wrap = true -- Quebra linha longa visualmente
-opt.ignorecase = true -- Busca ignora maiúscula/minúscula...
-opt.smartcase = true -- ...a menos que você digite uma maiúscula
-opt.cursorline = true -- Destaca a linha atual
-opt.termguicolors = true -- Cores reais (24-bit)
-opt.scrolloff = 8 -- Mantém 8 linhas de margem ao rolar a tela
--- opt.clipboard = "unnamedplus" -- Integra com o clipboard do sistema
+opt.number = true -- Show line number
+opt.relativenumber = true -- Relative numbers
+opt.tabstop = 4 -- Tab size
+opt.shiftwidth = 4 -- Indentation size
+opt.expandtab = true -- Convert Tab to Spaces
+opt.autoindent = true -- Keep indentation on new line
+opt.wrap = true -- Wrap long lines visually
+opt.ignorecase = true -- Search ignores case...
+opt.smartcase = true -- ...unless you type an uppercase letter
+opt.cursorline = true -- Highlight current line
+opt.termguicolors = true -- True colors (24-bit)
+opt.scrolloff = 8 -- Keep 8 lines of margin when scrolling
+-- opt.clipboard = "unnamedplus" -- Integrate with system clipboard
 
 -- Leader Key
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 -- ============================================================================
--- CONFIGURAÇÃO DE DOBRAS (FOLDS)
+-- FOLD CONFIGURATION
 -- ============================================================================
-opt.foldmethod = "expr" -- Usa a inteligência do Treesitter para saber onde dobrar
+opt.foldmethod = "expr" -- Use Treesitter intelligence to determine where to fold
 opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 
-opt.foldlevel = 99 -- Começa com tudo aberto (só dobra se for nível 99+)
-opt.foldlevelstart = 99 -- Garante que arquivos novos abram expandidos
-opt.foldenable = true -- Habilita o sistema (mas começa aberto por causa do 99)
+opt.foldlevel = 99 -- Start with everything open (only folds at level 99+)
+opt.foldlevelstart = 99 -- Ensure new files open expanded
+opt.foldenable = true -- Enable the system (but starts open because of 99)

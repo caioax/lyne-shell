@@ -3,17 +3,33 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import Quickshell
+import Quickshell.Wayland
 import Quickshell.Hyprland
 import qs.config
 import qs.services
 
-PopupWindow {
+PanelWindow {
     id: root
 
     // Size settings
     readonly property int contentWidth: 400
     readonly property int contentHeight: 600
     readonly property int screenMargin: 15
+
+    WlrLayershell.namespace: "qs_modules"
+    WlrLayershell.layer: WlrLayer.Overlay
+    WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+    WlrLayershell.exclusiveZone: -1
+
+    anchors {
+        top: true
+        right: true
+    }
+
+    margins {
+        top: Config.barHeight + 10
+        right: 10
+    }
 
     implicitWidth: contentWidth + (screenMargin * 2)
     implicitHeight: contentHeight
@@ -75,7 +91,7 @@ PopupWindow {
             width: root.contentWidth
             height: root.contentHeight
             anchors.centerIn: parent
-            color: Config.backgroundColor
+            color: Config.backgroundTransparentColor
             radius: Config.radiusLarge
             clip: true
 

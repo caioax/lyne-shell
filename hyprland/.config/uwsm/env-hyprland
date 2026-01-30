@@ -4,7 +4,7 @@
 
 # ------------------------------------------------------------------------------
 # CURSORS / THEMES
-# Define o tema e tamanho do cursor tanto para XWayland quanto Wayland nativo
+# Sets cursor theme and size for both XWayland and native Wayland
 # ------------------------------------------------------------------------------
 export XCURSOR_THEME=Bibata-Modern-Classic
 export XCURSOR_SIZE=24
@@ -14,16 +14,16 @@ export HYPRCURSOR_SIZE=24
 
 # ------------------------------------------------------------------------------
 # AQUAMARINE / RENDERING (Hyprland > 0.40)
-# Configurações criticas de renderização e seleção de GPU
+# Critical rendering and GPU selection settings
 # ------------------------------------------------------------------------------
-# Correção para alguns artefatos visuais (0 = desativado)
+# Fix for some visual artifacts (0 = disabled)
 export AQ_FORCE_LINEAR_BLIT=0
 
 # ------------------------------------------------------------------------------
 # APPS & TOOLS CONFIGURATION
-# Variáveis customizadas para scripts e ferramentas do usuário
+# Custom variables for user scripts and tools
 # ------------------------------------------------------------------------------
-# Diretório padrão para salvar capturas de tela do Hyprshot
+# Default directory to save Hyprshot screenshots
 export HYPRSHOT_DIR="$HOME/Pictures/Screenshots"
 
 # Load local hyprland hardware exports (Aquamarine, etc)

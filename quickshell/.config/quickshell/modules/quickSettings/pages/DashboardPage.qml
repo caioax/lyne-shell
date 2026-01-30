@@ -183,6 +183,7 @@ Item {
 
             // BLUETOOTH BUTTON
             QuickSettingsTile {
+                visible: BluetoothService.adapter !== null
                 icon: BluetoothService.systemIcon
                 label: "Bluetooth"
                 subLabel: BluetoothService.statusText
@@ -205,12 +206,84 @@ Item {
 
             // DND (Do Not Disturb)
             QuickSettingsTile {
+                Layout.columnSpan: BluetoothService.adapter === null ? 2 : 1
                 icon: NotificationService.dndEnabled ? "󰂛" : "󰂚"
                 label: "Do not disturb"
                 subLabel: NotificationService.dndEnabled ? "Enabled" : "Disabled"
                 active: NotificationService.dndEnabled
                 hasDetails: false
                 onToggled: NotificationService.toggleDnd()
+            }
+        }
+
+        // THEME COLOR BAR
+        Rectangle {
+            Layout.fillWidth: true
+            implicitHeight: 36
+            radius: Config.radiusLarge
+            color: themeBarMouse.containsMouse ? Config.surface2Color : Config.surface1Color
+
+            Behavior on color {
+                ColorAnimation { duration: Config.animDurationShort }
+            }
+
+            RowLayout {
+                anchors.fill: parent
+                anchors.leftMargin: 15
+                anchors.rightMargin: 10
+                spacing: 8
+
+                Text {
+                    text: "󰏘"
+                    font.family: Config.font
+                    font.pixelSize: Config.fontSizeNormal
+                    color: Config.accentColor
+                }
+
+                Text {
+                    text: ThemeService.currentThemeName
+                    font.family: Config.font
+                    font.pixelSize: Config.fontSizeSmall
+                    font.bold: true
+                    color: Config.textColor
+                    Layout.fillWidth: true
+                }
+
+                Repeater {
+                    model: [
+                        ThemeService.palette.background,
+                        ThemeService.palette.accent,
+                        ThemeService.palette.success,
+                        ThemeService.palette.warning,
+                        ThemeService.palette.error
+                    ]
+
+                    Rectangle {
+                        required property string modelData
+                        width: 14
+                        height: 14
+                        radius: 7
+                        color: modelData
+                        border.width: 1
+                        border.color: Qt.alpha(Config.textColor, 0.15)
+                    }
+                }
+
+                Text {
+                    text: ""
+                    font.family: Config.font
+                    font.pixelSize: Config.fontSizeSmall
+                    color: Config.subtextColor
+                    opacity: themeBarMouse.containsMouse ? 1.0 : 0.7
+                }
+            }
+
+            MouseArea {
+                id: themeBarMouse
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: pageStack.currentIndex = 5
             }
         }
 
@@ -236,7 +309,5 @@ Item {
                 onIconClicked: BrightnessService.toggleBrightness()
             }
         }
-
-        SystemMonitorWidget {}
     }
 }

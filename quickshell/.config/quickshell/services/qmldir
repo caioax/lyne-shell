@@ -16,3 +16,5 @@ singleton SystemMonitorService SystemMonitorService.qml
 singleton WindowManagerService WindowManagerService.qml
 singleton OsdService OsdService.qml
 singleton WallpaperService WallpaperService.qml
+singleton ClipboardService ClipboardService.qml
+singleton ThemeService ThemeService.qml

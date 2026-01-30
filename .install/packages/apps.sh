@@ -13,9 +13,6 @@ APPS_PACKAGES=(
     "ffmpegthumbs"             # Video thumbnails for Dolphin
     "kdegraphics-thumbnailers" # Image/PDF thumbnails
 
-    # Launcher
-    "rofi-wayland" # Application launcher (Wayland fork)
-
     # Multimedia
     "mpv"
 

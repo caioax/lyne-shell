@@ -4,7 +4,7 @@ return {
 	priority = 1000,
 	lazy = false,
 	opts = {
-		-- === MÓDULOS ATIVADOS ===
+		-- === ENABLED MODULES ===
 		bigfile = { enabled = true },
 		indent = { enabled = true },
 		input = { enabled = true },
@@ -17,7 +17,7 @@ return {
 		scratch = { enabled = true },
 		terminal = { enabled = true },
 
-		-- CONFIGURAÇÃO DO DASHBOARD
+		-- DASHBOARD CONFIGURATION
 		dashboard = {
 			enabled = true,
 			preset = {
@@ -32,7 +32,7 @@ return {
  ██████  █████████████████████ ████ █████ █████ ████ ██████ 
                 ]],
 
-				-- Botões do Menu
+				-- Menu Buttons
 				keys = {
 					{
 						icon = " ",
@@ -96,19 +96,19 @@ return {
 				{
 					{
 						function()
-							-- 1. Dados do Lazy (Plugins e Tempo)
+							-- 1. Lazy data (Plugins and Time)
 							local stats = require("lazy").stats()
 							local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
 
-							-- 2. Dados de Versão do Neovim
+							-- 2. Neovim Version data
 							local v = vim.version()
 							local version = "v" .. v.major .. "." .. v.minor .. "." .. v.patch
 
-							-- 3. Data Atual
+							-- 3. Current Date
 							local date = os.date("%d/%m - %H:%M")
 
-							-- 4. Checagem de Updates
-							-- Precisa requerer o status do lazy
+							-- 4. Update Check
+							-- Need to require lazy status
 							local plugin_updates = ""
 							local lazy_status = require("lazy.status")
 							if lazy_status.has_updates() then
@@ -118,21 +118,21 @@ return {
 							return {
 								align = "center",
 								text = {
-									-- Linha 1: Versão e Data
-									{ "  ", hl = "SnacksDashboardIcon" }, -- Ícone Azul
-									{ version, hl = "SnacksDashboardKey" }, -- Versão Amarela
+									-- Line 1: Version and Date
+									{ "  ", hl = "SnacksDashboardIcon" }, -- Blue Icon
+									{ version, hl = "SnacksDashboardKey" }, -- Yellow Version
 									{ "     ", hl = "SnacksDashboardIcon" },
-									{ date, hl = "SnacksDashboardDesc" }, -- Data Branca
-									{ "\n\n", hl = "Normal" }, -- Pula linha
+									{ date, hl = "SnacksDashboardDesc" }, -- White Date
+									{ "\n\n", hl = "Normal" }, -- Line break
 
-									-- Linha 2: Performance e Plugins
+									-- Line 2: Performance and Plugins
 									{ "Neovim loaded ", hl = "SnacksDashboardDesc" },
 									{ stats.loaded .. "/" .. stats.count, hl = "SnacksDashboardKey" },
 									{ " plugins in ", hl = "SnacksDashboardDesc" },
 									{ ms .. "ms", hl = "SnacksDashboardSpecial" },
 
-									-- Linha 3 (Só aparece se tiver updates)
-									{ plugin_updates, hl = "DiagnosticError" }, -- Vermelho se tiver update
+									-- Line 3 (Only appears if there are updates)
+									{ plugin_updates, hl = "DiagnosticError" }, -- Red if there are updates
 								},
 							}
 						end,
@@ -142,7 +142,7 @@ return {
 		},
 	},
 
-	-- (Atalhos Globais) --
+	-- (Global Shortcuts) --
 	keys = {
 		{
 			"<leader>sf",

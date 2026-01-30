@@ -2,7 +2,7 @@ return {
 	"mrjones2014/smart-splits.nvim",
 	lazy = false,
 	keys = {
-		-- === NAVEGAÇÃO (Ctrl + h/j/k/l) ===
+		-- === NAVIGATION (Ctrl + h/j/k/l) ===
 		{
 			"<C-h>",
 			function()
@@ -32,7 +32,7 @@ return {
 			desc = "Move focus to the right",
 		},
 
-		-- === REDIMENSIONAMENTO (Alt + h/j/k/l) ===
+		-- === RESIZING (Alt + h/j/k/l) ===
 		{
 			"<A-h>",
 			function()
@@ -64,7 +64,7 @@ return {
 	},
 	config = function()
 		require("smart-splits").setup({
-			-- Ignora buffers que não devem ser redimensionados ou navegados
+			-- Ignore buffers that should not be resized or navigated
 			ignored_filetypes = {
 				"nofile",
 				"quickfix",

@@ -22,7 +22,7 @@ Scope {
 
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.exclusiveZone: -1
-            WlrLayershell.namespace: "notifications"
+            WlrLayershell.namespace: "qs_notification"
 
             anchors {
                 top: true

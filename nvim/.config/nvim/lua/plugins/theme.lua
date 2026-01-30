@@ -1,25 +1,38 @@
+-- Reads the current theme name from ~/.config/nvim/current-theme.txt
+local function get_colorscheme()
+	local path = vim.fn.expand("~/.config/nvim/current-theme.txt")
+	local file = io.open(path, "r")
+	if file then
+		local name = file:read("*l")
+		file:close()
+		if name and name ~= "" then
+			return vim.trim(name)
+		end
+	end
+	return "tokyonight"
+end
+
+-- ============================================================================
+-- THEME PLUGINS
+-- ============================================================================
+
 return {
 	{
 		"folke/tokyonight.nvim",
-		lazy = false,
+		lazy = true,
 		priority = 1000,
 		opts = {
 			style = "night",
-			transparent = false, -- Set to true if you want transparency
+			transparent = false,
 
-			-- This function allows you to override specific highlights
-			-- hl: the table where you define highlights
-			-- c: the tokyonight color palette
 			on_highlights = function(hl, c)
-				-- 1. Map Tokyo Night colors to your custom 'p' variable
-				-- This allows us to reuse your logic without changing variable names everywhere
 				local p = {
 					bg = c.bg,
 					bg_dark = c.bg_dark,
 					bg_float = c.bg_highlight,
 					bg_visual = c.bg_visual,
 					fg = c.fg,
-					fg_dim = c.comment, -- Comments are usually a good "dim" color
+					fg_dim = c.comment,
 					border = c.border_highlight,
 
 					func = c.blue,
@@ -30,25 +43,20 @@ return {
 					property = c.cyan,
 					error = c.error,
 
-					-- Git
 					git_add = c.git.add,
 					git_change = c.git.change,
 					git_del = c.git.delete,
 
-					-- Diagnostics
 					diag_err = c.error,
 					diag_warn = c.warning,
 					diag_info = c.info,
 					diag_hint = c.hint,
 
-					-- Indent guides
 					guide = c.fg_gutter,
 					scope = c.comment,
 				}
 
-				-- ========================================================================
-				-- 1. GENERAL UI
-				-- ========================================================================
+				-- General UI
 				hl.NormalFloat = { fg = p.fg, bg = p.bg_float }
 				hl.FloatBorder = { fg = p.border, bg = p.bg_float }
 
@@ -68,9 +76,7 @@ return {
 				hl.VertSplit = { fg = p.border }
 				hl.MatchParen = { fg = p.class, bold = true, underline = true }
 
-				-- ========================================================================
-				-- 2. SYNTAX (General)
-				-- ========================================================================
+				-- Syntax
 				hl.Comment = { fg = p.fg_dim, italic = true }
 				hl.String = { fg = p.string }
 				hl.Number = { fg = p.number }
@@ -88,9 +94,7 @@ return {
 				hl.Type = { fg = p.class }
 				hl.Delimiter = { fg = p.fg_dim }
 
-				-- ========================================================================
-				-- 3. TREESITTER
-				-- ========================================================================
+				-- Treesitter
 				hl["@variable"] = { fg = p.fg }
 				hl["@variable.builtin"] = { fg = p.keyword }
 				hl["@variable.parameter"] = { fg = p.number }
@@ -116,10 +120,6 @@ return {
 				hl["@punctuation.delimiter"] = { fg = p.fg_dim }
 				hl["@punctuation.bracket"] = { fg = p.fg_dim }
 
-				-- ========================================================================
-				-- 4. PLUGINS
-				-- ========================================================================
-
 				-- Telescope
 				hl.TelescopeNormal = { bg = p.bg_dark }
 				hl.TelescopeBorder = { fg = p.border, bg = p.bg_dark }
@@ -128,7 +128,7 @@ return {
 				hl.TelescopePromptTitle = { fg = p.bg, bg = p.func, bold = true }
 				hl.TelescopeSelection = { bg = p.bg_visual, fg = p.class }
 
-				-- Pmenu (Autocomplete)
+				-- Autocomplete
 				hl.Pmenu = { bg = p.bg_float, fg = p.fg_dim }
 				hl.PmenuSel = { bg = p.bg_visual, fg = p.fg, bold = true }
 				hl.PmenuThumb = { bg = p.border }
@@ -147,15 +147,11 @@ return {
 				hl.DiagnosticHint = { fg = p.diag_hint }
 				hl.DiagnosticUnderlineError = { undercurl = true, sp = p.diag_err }
 
-				-- ========================================================================
-				-- 5. INDENTATION
-				-- ========================================================================
+				-- Indentation
 				hl.SnacksIndent = { fg = p.guide }
 				hl.SnacksIndentScope = { fg = p.scope }
 
-				-- ========================================================================
-				-- 6. NEO-TREE
-				-- ========================================================================
+				-- Neo-tree
 				hl.NeoTreeNormal = { bg = p.bg_dark, fg = p.fg }
 				hl.NeoTreeNormalNC = { bg = p.bg_dark, fg = p.fg }
 				hl.NeoTreeWinSeparator = { fg = p.bg_dark, bg = p.bg_dark }
@@ -177,9 +173,7 @@ return {
 				hl.NeoTreeExpander = { fg = p.fg_dim }
 				hl.NeoTreeSymbolicLinkTarget = { fg = p.property }
 
-				-- ========================================================================
-				-- 7. SNACKS DASHBOARD
-				-- ========================================================================
+				-- Snacks Dashboard
 				hl.SnacksDashboardHeader = { fg = p.func }
 				hl.SnacksDashboardIcon = { fg = p.func }
 				hl.SnacksDashboardDesc = { fg = p.fg }
@@ -188,9 +182,48 @@ return {
 				hl.SnacksDashboardSpecial = { fg = p.string }
 			end,
 		},
-		config = function(_, opts)
-			require("tokyonight").setup(opts)
-			vim.cmd.colorscheme("tokyonight")
+	},
+	{
+		"catppuccin/nvim",
+		name = "catppuccin",
+		lazy = true,
+		priority = 1000,
+		opts = { flavour = "mocha" },
+	},
+	{
+		"ellisonleao/gruvbox.nvim",
+		lazy = true,
+		priority = 1000,
+		opts = { contrast = "hard" },
+	},
+	{
+		"Mofiqul/dracula.nvim",
+		lazy = true,
+		priority = 1000,
+	},
+	{
+		"shaunsingh/nord.nvim",
+		lazy = true,
+		priority = 1000,
+	},
+	{
+		"rose-pine/neovim",
+		name = "rose-pine",
+		lazy = true,
+		priority = 1000,
+		opts = { variant = "main" },
+	},
+	{
+		dir = vim.fn.stdpath("config"),
+		name = "theme-loader",
+		lazy = false,
+		priority = 999,
+		config = function()
+			local scheme = get_colorscheme()
+			local ok, _ = pcall(vim.cmd.colorscheme, scheme)
+			if not ok then
+				vim.cmd.colorscheme("tokyonight")
+			end
 		end,
 	},
 }

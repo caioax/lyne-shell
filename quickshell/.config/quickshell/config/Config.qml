@@ -14,28 +14,29 @@ Singleton {
     }
 
     // ========================================================================
-    // PALETTE (Tokyo Night Colors)
+    // PALETTE (from ThemeService — defined in .data/themes/<name>.json)
     // ========================================================================
-    readonly property color backgroundColor: conf("palette.background", "#1a1b26")
-    readonly property color backgroundTransparentColor: Qt.alpha(backgroundColor, 0.80)
-    readonly property color surface0Color: conf("palette.surface0", "#24283b")
-    readonly property color surface1Color: conf("palette.surface1", "#292e42")
-    readonly property color surface2Color: conf("palette.surface2", "#414868")
-    readonly property color surface3Color: conf("palette.surface3", "#565f89")
+    readonly property color backgroundColor: ThemeService.color("background", "#1a1b26")
+    readonly property real backgroundOpacity: conf("opacity.background", 0.9)
+    readonly property color backgroundTransparentColor: Qt.alpha(backgroundColor, backgroundOpacity)
+    readonly property color surface0Color: ThemeService.color("surface0", "#24283b")
+    readonly property color surface1Color: ThemeService.color("surface1", "#292e42")
+    readonly property color surface2Color: ThemeService.color("surface2", "#414868")
+    readonly property color surface3Color: ThemeService.color("surface3", "#565f89")
 
-    readonly property color textColor: conf("palette.text", "#c0caf5")
-    readonly property color textReverseColor: conf("palette.textReverse", "#1a1b26")
-    readonly property color subtextColor: conf("palette.subtext", "#a9b1d6")
-    readonly property color subtextReverseColor: conf("palette.subtextReverse", "#565f89")
+    readonly property color textColor: ThemeService.color("text", "#c0caf5")
+    readonly property color textReverseColor: ThemeService.color("textReverse", "#1a1b26")
+    readonly property color subtextColor: ThemeService.color("subtext", "#a9b1d6")
+    readonly property color subtextReverseColor: ThemeService.color("subtextReverse", "#565f89")
 
-    readonly property color accentColor: conf("palette.accent", "#7aa2f7")
-    readonly property color successColor: conf("palette.success", "#9ece6a")
-    readonly property color warningColor: conf("palette.warning", "#e0af68")
-    readonly property color errorColor: conf("palette.error", "#f7768e")
+    readonly property color accentColor: ThemeService.color("accent", "#7aa2f7")
+    readonly property color successColor: ThemeService.color("success", "#9ece6a")
+    readonly property color warningColor: ThemeService.color("warning", "#e0af68")
+    readonly property color errorColor: ThemeService.color("error", "#f7768e")
 
-    readonly property color mutedColor: conf("palette.muted", "#545c7e")
-    readonly property color greyBlueColor: conf("palette.greyBlue", "#283457")
-    readonly property color blueDarkColor: conf("palette.blueDark", "#16161e")
+    readonly property color mutedColor: ThemeService.color("muted", "#545c7e")
+    readonly property color greyBlueColor: ThemeService.color("greyBlue", "#283457")
+    readonly property color blueDarkColor: ThemeService.color("blueDark", "#16161e")
 
     // ========================================================================
     // GEOMETRY & LAYOUT

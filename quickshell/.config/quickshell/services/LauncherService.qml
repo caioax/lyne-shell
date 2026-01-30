@@ -16,8 +16,12 @@ Singleton {
     property int selectedIndex: 0
     property int maxItems: 50
 
+    // Incremented on each open to force re-evaluation of the app list
+    property int _refreshToken: 0
+
     // Filtered app list
     readonly property var filteredApps: {
+        void root._refreshToken;
         let apps = DesktopEntries.applications.values;
 
         // Sort alphabetically
@@ -58,6 +62,7 @@ Singleton {
     // ========================================================================
 
     function show() {
+        _refreshToken++;
         query = "";
         selectedIndex = 0;
         visible = true;

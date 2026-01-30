@@ -1,11 +1,11 @@
 return {
-	-- Gitsigns: Mostra barras coloridas na esquerda (Add/Change/Delete)
+	-- Gitsigns: Shows colored bars on the left (Add/Change/Delete)
 	{
 		"lewis6991/gitsigns.nvim",
 		event = { "BufReadPre", "BufNewFile" },
 		config = function()
 			require("gitsigns").setup({
-				-- Configuração visual dos sinais
+				-- Visual configuration of signs
 				signs = {
 					add = { text = "▎" },
 					change = { text = "▎" },
@@ -13,7 +13,7 @@ return {
 					topdelete = { text = "" },
 					changedelete = { text = "▎" },
 				},
-				-- Atalhos úteis para Git (opcional, mas recomendado)
+				-- Useful Git shortcuts (optional but recommended)
 				on_attach = function(bufnr)
 					local gs = package.loaded.gitsigns
 					local function map(mode, l, r, opts)
@@ -22,7 +22,7 @@ return {
 						vim.keymap.set(mode, l, r, opts)
 					end
 
-					-- Navegar entre mudanças (hunk)
+					-- Navigate between changes (hunk)
 					map("n", "]c", function()
 						if vim.wo.diff then
 							return "]c"
@@ -43,10 +43,10 @@ return {
 						return "<Ignore>"
 					end, { expr = true })
 
-					-- Ações
-					map("n", "<leader>gb", gs.toggle_current_line_blame, { desc = "Git Blame (Linha)" })
+					-- Actions
+					map("n", "<leader>gb", gs.toggle_current_line_blame, { desc = "Git Blame (Line)" })
 					map("n", "<leader>gd", gs.diffthis, { desc = "Git Diff" })
-					map("n", "<leader>gp", gs.preview_hunk, { desc = "Preview da Mudança" })
+					map("n", "<leader>gp", gs.preview_hunk, { desc = "Preview Change" })
 				end,
 			})
 		end,

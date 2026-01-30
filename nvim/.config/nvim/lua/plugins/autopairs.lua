@@ -1,10 +1,10 @@
 return {
 	{
 		"windwp/nvim-autopairs",
-		event = "InsertEnter", -- Carrega só quando começa a digitar
-		config = true, -- Usa a configuração padrão
-		-- Opcional: Integração com o menu de autocomplete (CMP)
-		-- Se você der Enter no menu de sugestão, ele ajusta os parênteses
+		event = "InsertEnter", -- Only loads when you start typing
+		config = true, -- Uses default configuration
+		-- Optional: Integration with the autocomplete menu (CMP)
+		-- If you press Enter in the suggestion menu, it adjusts the parentheses
 		dependencies = { "hrsh7th/nvim-cmp" },
 		init = function()
 			local cmp_autopairs = require("nvim-autopairs.completion.cmp")

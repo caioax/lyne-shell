@@ -1,0 +1,65 @@
+{
+  "name": "Gruvbox Dark",
+  "palette": {
+    "background": "#282828",
+    "surface0": "#3c3836",
+    "surface1": "#504945",
+    "surface2": "#665c54",
+    "surface3": "#7c6f64",
+    "text": "#ebdbb2",
+    "textReverse": "#282828",
+    "subtext": "#d5c4a1",
+    "subtextReverse": "#7c6f64",
+    "accent": "#458588",
+    "success": "#b8bb26",
+    "warning": "#fabd2f",
+    "error": "#fb4934",
+    "muted": "#665c54",
+    "greyBlue": "#3c3836",
+    "blueDark": "#1d2021"
+  },
+  "opacity": {
+    "background": 0.9
+  },
+  "neovim": {
+    "colorscheme": "gruvbox"
+  },
+  "hyprland": {
+    "activeBorder": "458588ff",
+    "inactiveBorder": "665c54aa",
+    "shadowColor": "1d2021ee"
+  },
+  "terminal": {
+    "background": "#282828",
+    "foreground": "#ebdbb2",
+    "selectionBackground": "#504945",
+    "selectionForeground": "#ebdbb2",
+    "urlColor": "#8ec07c",
+    "cursor": "#ebdbb2",
+    "cursorTextColor": "#282828",
+    "activeTabBackground": "#458588",
+    "activeTabForeground": "#1d2021",
+    "inactiveTabBackground": "#3c3836",
+    "inactiveTabForeground": "#665c54",
+    "activeBorderColor": "#458588",
+    "inactiveBorderColor": "#3c3836",
+    "color0": "#282828",
+    "color1": "#cc241d",
+    "color2": "#98971a",
+    "color3": "#d79921",
+    "color4": "#458588",
+    "color5": "#b16286",
+    "color6": "#689d6a",
+    "color7": "#a89984",
+    "color8": "#928374",
+    "color9": "#fb4934",
+    "color10": "#b8bb26",
+    "color11": "#fabd2f",
+    "color12": "#83a598",
+    "color13": "#d3869b",
+    "color14": "#8ec07c",
+    "color15": "#ebdbb2",
+    "color16": "#d65d0e",
+    "color17": "#cc241d"
+  }
+}

@@ -8,6 +8,7 @@ import qs.services
 import "../../components/"
 import "../quickSettings/"
 import "../notifications/"
+import "../systemMonitor/"
 
 Scope {
     id: root
@@ -84,6 +85,7 @@ Scope {
                     spacing: root.gapIn
 
                     Clock {}
+                    SystemMonitorButton {}
                     ActiveWindow {}
                 }
 

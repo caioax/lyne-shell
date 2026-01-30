@@ -30,7 +30,10 @@ PanelWindow {
     // Click on background closes
     MouseArea {
         anchors.fill: parent
-        onClicked: LauncherService.hide()
+        onClicked: {
+            contentLoader.item.forceActiveFocus();
+            LauncherService.hide();
+        }
     }
 
     // Loader that creates/destroys the content
@@ -117,22 +120,27 @@ PanelWindow {
                             selectByMouse: true
                             placeholderText: "Search apps..."
                             placeholderTextColor: Config.mutedColor
-
-                            // Remove the default TextField background
                             background: null
 
                             onTextChanged: LauncherService.query = text
 
-                            Keys.onEscapePressed: LauncherService.hide()
+                            Keys.onEscapePressed: {
+                                focus = false;
+                                LauncherService.hide();
+                            }
+
                             Keys.onReturnPressed: LauncherService.launchSelected()
+
                             Keys.onUpPressed: {
                                 if (LauncherService.selectedIndex > 0)
                                     LauncherService.selectedIndex--;
                             }
+
                             Keys.onDownPressed: {
                                 if (LauncherService.selectedIndex < LauncherService.filteredApps.length - 1)
                                     LauncherService.selectedIndex++;
                             }
+
                             Keys.onTabPressed: event => {
                                 if (LauncherService.selectedIndex < LauncherService.filteredApps.length - 1)
                                     LauncherService.selectedIndex++;
@@ -140,19 +148,24 @@ PanelWindow {
                             }
 
                             Keys.onPressed: event => {
-                                // Shift+Tab to go back
-                                if (event.key === Qt.Key_Backtab || (event.key === Qt.Key_Tab && (event.modifiers & Qt.ShiftModifier))) {
+                                const isBacktab = event.key === Qt.Key_Backtab;
+                                const isShiftTab = event.key === Qt.Key_Tab && (event.modifiers & Qt.ShiftModifier);
+
+                                if (isBacktab || isShiftTab) {
                                     if (LauncherService.selectedIndex > 0)
                                         LauncherService.selectedIndex--;
                                     event.accepted = true;
                                 }
                             }
 
-                            // Auto-focus when created
                             Component.onCompleted: {
                                 LauncherService.query = "";
                                 LauncherService.selectedIndex = 0;
-                                Qt.callLater(forceActiveFocus);
+                                Qt.callLater(() => {
+                                    if (LauncherService.visible) {
+                                        forceActiveFocus();
+                                    }
+                                });
                             }
                         }
 

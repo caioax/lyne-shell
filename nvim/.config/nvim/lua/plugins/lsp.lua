@@ -10,16 +10,16 @@ return {
 		},
 		config = function()
 			-- ========================================================================
-			-- 1. CONFIGURAÇÃO VISUAL (Diagnostic) - Versão Moderna (Neovim 0.10+)
+			-- 1. VISUAL CONFIGURATION (Diagnostic) - Modern Version (Neovim 0.10+)
 			-- ========================================================================
 			vim.diagnostic.config({
-				-- Texto na linha: DESATIVADO (Limpeza visual)
+				-- Inline text: DISABLED (Visual cleanliness)
 				virtual_text = false,
 
-				-- Sublinhado no erro: ATIVADO
+				-- Error underline: ENABLED
 				underline = true,
 
-				-- Ícones na lateral: ATIVADO (Nova sintaxe sem erro de deprecated)
+				-- Gutter icons: ENABLED (New syntax without deprecation warning)
 				signs = {
 					text = {
 						[vim.diagnostic.severity.ERROR] = "",
@@ -29,15 +29,15 @@ return {
 					},
 				},
 
-				-- Não atualizar enquanto digita
+				-- Do not update while typing
 				update_in_insert = false,
 
-				-- Ordenação: Erros graves primeiro
+				-- Sorting: Severe errors first
 				severity_sort = true,
 			})
 
 			-- ========================================================================
-			-- 2. DEFINIÇÃO DE ATALHOS GLOBAIS (LspAttach)
+			-- 2. GLOBAL KEYBINDINGS DEFINITION (LspAttach)
 			-- ========================================================================
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("UserLspConfig", { clear = true }),
@@ -46,7 +46,7 @@ return {
 						vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
 					end
 
-					-- === SEU NOVO ATALHO ===
+					-- === CUSTOM SHORTCUT ===
 					-- [gl] = Go Line Diagnostic
 					map("gl", function()
 						vim.diagnostic.open_float({
@@ -56,27 +56,27 @@ return {
 							header = "",
 							prefix = "",
 						})
-					end, "Ver Erro na Linha (Float)")
+					end, "View Line Error (Float)")
 
-					-- Atalhos Padrão
+					-- Default Keybindings
 					map("gd", require("telescope.builtin").lsp_definitions, "Go to Definition")
 					map("gr", require("telescope.builtin").lsp_references, "Go to References")
 					map("K", vim.lsp.buf.hover, "Hover Documentation")
 					map("<leader>rn", vim.lsp.buf.rename, "Rename Variable")
 					map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
 
-					-- Navegação rápida entre erros
+					-- Quick navigation between errors
 					map("[d", function()
 						vim.diagnostic.goto_prev({ float = false })
-					end, "Erro Anterior")
+					end, "Previous Error")
 					map("]d", function()
 						vim.diagnostic.goto_next({ float = false })
-					end, "Próximo Erro")
+					end, "Next Error")
 				end,
 			})
 
 			-- ========================================================================
-			-- 3. INICIALIZAÇÃO DO MASON
+			-- 3. MASON INITIALIZATION
 			-- ========================================================================
 			require("mason").setup()
 

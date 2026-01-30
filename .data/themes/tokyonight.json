@@ -1,0 +1,65 @@
+{
+  "name": "Tokyo Night",
+  "palette": {
+    "background": "#1a1b26",
+    "surface0": "#24283b",
+    "surface1": "#292e42",
+    "surface2": "#414868",
+    "surface3": "#565f89",
+    "text": "#c0caf5",
+    "textReverse": "#1a1b26",
+    "subtext": "#a9b1d6",
+    "subtextReverse": "#565f89",
+    "accent": "#7aa2f7",
+    "success": "#9ece6a",
+    "warning": "#e0af68",
+    "error": "#f7768e",
+    "muted": "#545c7e",
+    "greyBlue": "#283457",
+    "blueDark": "#16161e"
+  },
+  "opacity": {
+    "background": 0.9
+  },
+  "neovim": {
+    "colorscheme": "tokyonight"
+  },
+  "hyprland": {
+    "activeBorder": "7aa2f7ff",
+    "inactiveBorder": "595959aa",
+    "shadowColor": "1a1a1aee"
+  },
+  "terminal": {
+    "background": "#1a1b26",
+    "foreground": "#c0caf5",
+    "selectionBackground": "#283457",
+    "selectionForeground": "#c0caf5",
+    "urlColor": "#73daca",
+    "cursor": "#c0caf5",
+    "cursorTextColor": "#1a1b26",
+    "activeTabBackground": "#7aa2f7",
+    "activeTabForeground": "#16161e",
+    "inactiveTabBackground": "#292e42",
+    "inactiveTabForeground": "#545c7e",
+    "activeBorderColor": "#7aa2f7",
+    "inactiveBorderColor": "#292e42",
+    "color0": "#15161e",
+    "color1": "#f7768e",
+    "color2": "#9ece6a",
+    "color3": "#e0af68",
+    "color4": "#7aa2f7",
+    "color5": "#bb9af7",
+    "color6": "#7dcfff",
+    "color7": "#a9b1d6",
+    "color8": "#414868",
+    "color9": "#ff899d",
+    "color10": "#9fe044",
+    "color11": "#faba4a",
+    "color12": "#8db0ff",
+    "color13": "#c7a9ff",
+    "color14": "#a4daff",
+    "color15": "#c0caf5",
+    "color16": "#ff9e64",
+    "color17": "#db4b4b"
+  }
+}

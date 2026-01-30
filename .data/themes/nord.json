@@ -1,0 +1,65 @@
+{
+  "name": "Nord",
+  "palette": {
+    "background": "#2e3440",
+    "surface0": "#3b4252",
+    "surface1": "#434c5e",
+    "surface2": "#4c566a",
+    "surface3": "#616e88",
+    "text": "#eceff4",
+    "textReverse": "#2e3440",
+    "subtext": "#d8dee9",
+    "subtextReverse": "#616e88",
+    "accent": "#88c0d0",
+    "success": "#a3be8c",
+    "warning": "#ebcb8b",
+    "error": "#bf616a",
+    "muted": "#4c566a",
+    "greyBlue": "#3b4252",
+    "blueDark": "#242933"
+  },
+  "opacity": {
+    "background": 0.9
+  },
+  "neovim": {
+    "colorscheme": "nord"
+  },
+  "hyprland": {
+    "activeBorder": "88c0d0ff",
+    "inactiveBorder": "4c566aaa",
+    "shadowColor": "242933ee"
+  },
+  "terminal": {
+    "background": "#2e3440",
+    "foreground": "#eceff4",
+    "selectionBackground": "#434c5e",
+    "selectionForeground": "#eceff4",
+    "urlColor": "#88c0d0",
+    "cursor": "#eceff4",
+    "cursorTextColor": "#2e3440",
+    "activeTabBackground": "#88c0d0",
+    "activeTabForeground": "#242933",
+    "inactiveTabBackground": "#3b4252",
+    "inactiveTabForeground": "#4c566a",
+    "activeBorderColor": "#88c0d0",
+    "inactiveBorderColor": "#3b4252",
+    "color0": "#3b4252",
+    "color1": "#bf616a",
+    "color2": "#a3be8c",
+    "color3": "#ebcb8b",
+    "color4": "#81a1c1",
+    "color5": "#b48ead",
+    "color6": "#88c0d0",
+    "color7": "#e5e9f0",
+    "color8": "#4c566a",
+    "color9": "#bf616a",
+    "color10": "#a3be8c",
+    "color11": "#ebcb8b",
+    "color12": "#81a1c1",
+    "color13": "#b48ead",
+    "color14": "#8fbcbb",
+    "color15": "#eceff4",
+    "color16": "#d08770",
+    "color17": "#bf616a"
+  }
+}

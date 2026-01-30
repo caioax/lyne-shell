@@ -2,13 +2,14 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Wayland
 import Quickshell.Hyprland
 import Quickshell.Io
 import qs.config
 import qs.services
 import "./pages/"
 
-PopupWindow {
+PanelWindow {
     id: root
 
     // Size settings
@@ -16,17 +17,29 @@ PopupWindow {
     readonly property int defaultHeight: 300
     readonly property int internalMargin: 32
     readonly property int screenMargin: 15
+    readonly property int maxHeight: 700
 
-    implicitWidth: contentWidth + screenMargin
-    implicitHeight: (pageStack.children[pageStack.currentIndex]?.implicitHeight ?? defaultHeight) + internalMargin
+    // The actual content height for the background rectangle
+    readonly property int contentHeight: (pageStack.children[pageStack.currentIndex]?.implicitHeight ?? defaultHeight) + internalMargin
 
-    // Smooth animation when height changes (page switch)
-    Behavior on implicitHeight {
-        NumberAnimation {
-            duration: 200
-            easing.type: Easing.OutQuad
-        }
+    WlrLayershell.namespace: "qs_modules"
+    WlrLayershell.layer: WlrLayer.Overlay
+    WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+    WlrLayershell.exclusiveZone: -1
+
+    anchors {
+        top: true
+        right: true
     }
+
+    margins {
+        top: Config.barHeight + 10
+        right: 10
+    }
+
+    // Fixed window size — no Wayland repositioning jitter
+    implicitWidth: contentWidth + screenMargin
+    implicitHeight: maxHeight
 
     color: "transparent"
 
@@ -60,7 +73,7 @@ PopupWindow {
     }
 
     Timer {
-        id: grapTimer
+        id: grabTimer
         interval: 10
         onTriggered: {
             focusGrab.active = true;
@@ -74,7 +87,7 @@ PopupWindow {
             isClosing = false;
             isOpening = true;
             WindowManagerService.registerOpen("QuickSettings");
-            grapTimer.restart();
+            grabTimer.restart();
         } else {
             WindowManagerService.registerClose("QuickSettings");
             pageStack.currentIndex = 0;
@@ -90,8 +103,16 @@ PopupWindow {
         Rectangle {
             id: background
             width: root.contentWidth
-            height: root.implicitHeight
-            anchors.centerIn: parent
+            height: root.contentHeight
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+
+            Behavior on height {
+                NumberAnimation {
+                    duration: 200
+                    easing.type: Easing.OutQuad
+                }
+            }
             color: Config.backgroundTransparentColor
             radius: Config.radiusLarge
             clip: true
@@ -164,6 +185,13 @@ PopupWindow {
                 // PAGE 4: NIGHT LIGHT
                 // ==========================
                 NightLightPage {
+                    onBackRequested: pageStack.currentIndex = 0
+                }
+
+                // ==========================
+                // PAGE 5: THEME
+                // ==========================
+                ThemePage {
                     onBackRequested: pageStack.currentIndex = 0
                 }
             }

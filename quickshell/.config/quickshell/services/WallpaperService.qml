@@ -4,9 +4,18 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import qs.services
 
 Singleton {
     id: root
+
+    // Helper function to shorten the service call
+    function getState(path, fallback) {
+        return StateService.get(path, fallback);
+    }
+    function setState(path, value) {
+        StateService.set(path, value);
+    }
 
     // ========================================================================
     // PROPERTIES
@@ -17,19 +26,13 @@ Singleton {
     property var wallpapers: []
     property var selectedWallpapers: []
     property bool confirmDelete: false
+    property bool dynamicWallpaper: getState("wallpaper.dynamic", true)
 
     readonly property string wallpaperDir: Quickshell.env("HOME") + "/.local/wallpapers"
     readonly property int selectedCount: selectedWallpapers.length
 
     // Available transitions in swww
-    readonly property var transitions: [
-        "wipe",
-        "wave",
-        "grow",
-        "center",
-        "outer",
-        "any"
-    ]
+    readonly property var transitions: ["wipe", "wave", "grow", "center", "outer", "any"]
 
     // ========================================================================
     // INITIALIZATION
@@ -43,6 +46,11 @@ Singleton {
     // ========================================================================
     // PUBLIC FUNCTIONS
     // ========================================================================
+
+    function toggleDynamicWallpaper() {
+        setState("wallpaper.dynamic", !dynamicWallpaper);
+        dynamicWallpaper = getState("wallpaper.dynamic", true);
+    }
 
     function show() {
         refreshWallpapers();
@@ -58,8 +66,10 @@ Singleton {
     }
 
     function toggle() {
-        if (pickerVisible) hide();
-        else show();
+        if (pickerVisible)
+            hide();
+        else
+            show();
     }
 
     // Selection
@@ -91,13 +101,7 @@ Singleton {
         const transition = transitions[Math.floor(Math.random() * transitions.length)];
         const duration = (Math.random() * 1.5 + 0.5).toFixed(1);
 
-        setWallpaperProc.command = [
-            "swww", "img", path,
-            "--transition-type", transition,
-            "--transition-duration", duration,
-            "--transition-fps", "60",
-            "--transition-step", "90"
-        ];
+        setWallpaperProc.command = ["swww", "img", path, "--transition-type", transition, "--transition-duration", duration, "--transition-fps", "60", "--transition-step", "90"];
         setWallpaperProc.running = true;
 
         // Save current wallpaper to .current file for persistence
@@ -115,10 +119,12 @@ Singleton {
     }
 
     function setRandomWallpaper() {
-        if (wallpapers.length === 0) return;
+        if (wallpapers.length === 0)
+            return;
 
         const available = wallpapers.filter(w => w !== currentWallpaper);
-        if (available.length === 0) return;
+        if (available.length === 0)
+            return;
 
         const randomIndex = Math.floor(Math.random() * available.length);
         setWallpaper(available[randomIndex]);
@@ -126,7 +132,8 @@ Singleton {
 
     // Delete
     function requestDelete() {
-        if (selectedWallpapers.length === 0) return;
+        if (selectedWallpapers.length === 0)
+            return;
 
         if (selectedWallpapers.length === 1) {
             // Delete directly if only one

@@ -26,11 +26,36 @@ PanelWindow {
 
     property int selectedIndex: 0
     readonly property var actions: [
-        { id: "shutdown", icon: "󰐥", color: Config.errorColor, label: "Shutdown" },
-        { id: "reboot", icon: "󰜉", color: Config.warningColor, label: "Reboot" },
-        { id: "suspend", icon: "󰒲", color: Config.accentColor, label: "Suspend" },
-        { id: "logout", icon: "󰍃", color: Config.subtextColor, label: "Log Out" },
-        { id: "lock", icon: "󰌾", color: Config.subtextColor, label: "Lock" }
+        {
+            id: "shutdown",
+            icon: "󰐥",
+            color: Config.errorColor,
+            label: "Shutdown"
+        },
+        {
+            id: "reboot",
+            icon: "󰜉",
+            color: Config.warningColor,
+            label: "Reboot"
+        },
+        {
+            id: "suspend",
+            icon: "󰒲",
+            color: Config.accentColor,
+            label: "Suspend"
+        },
+        {
+            id: "logout",
+            icon: "󰍃",
+            color: Config.subtextColor,
+            label: "Log Out"
+        },
+        {
+            id: "lock",
+            icon: "󰌾",
+            color: Config.subtextColor,
+            label: "Lock"
+        }
     ]
 
     function navigate(delta: int) {
@@ -41,15 +66,9 @@ PanelWindow {
         PowerService.executeAction(actions[selectedIndex].id);
     }
 
-    // Background
-    Rectangle {
+    MouseArea {
         anchors.fill: parent
-        color: Qt.rgba(0, 0, 0, 0.3)
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: PowerService.hideOverlay()
-        }
+        onClicked: PowerService.hideOverlay()
     }
 
     // Central widget
@@ -77,7 +96,9 @@ PanelWindow {
         }
 
         Behavior on opacity {
-            NumberAnimation { duration: 150 }
+            NumberAnimation {
+                duration: 150
+            }
         }
 
         ColumnLayout {
@@ -115,8 +136,10 @@ PanelWindow {
                         property bool isSelected: index === root.selectedIndex
 
                         color: {
-                            if (isSelected) return Config.surface1Color;
-                            if (btnMouse.containsMouse) return Config.surface0Color;
+                            if (isSelected)
+                                return Config.surface1Color;
+                            if (btnMouse.containsMouse)
+                                return Config.surface0Color;
                             return "transparent";
                         }
 
@@ -125,9 +148,21 @@ PanelWindow {
 
                         scale: btnMouse.pressed ? 0.95 : 1.0
 
-                        Behavior on color { ColorAnimation { duration: 100 } }
-                        Behavior on scale { NumberAnimation { duration: 80 } }
-                        Behavior on border.width { NumberAnimation { duration: 100 } }
+                        Behavior on color {
+                            ColorAnimation {
+                                duration: 100
+                            }
+                        }
+                        Behavior on scale {
+                            NumberAnimation {
+                                duration: 80
+                            }
+                        }
+                        Behavior on border.width {
+                            NumberAnimation {
+                                duration: 100
+                            }
+                        }
 
                         ColumnLayout {
                             anchors.centerIn: parent
@@ -138,18 +173,14 @@ PanelWindow {
                                 Layout.preferredWidth: 44
                                 Layout.preferredHeight: 44
                                 radius: 22
-                                color: actionBtn.isSelected
-                                    ? Qt.alpha(actionBtn.modelData.color, 0.2)
-                                    : Config.surface0Color
+                                color: actionBtn.isSelected ? Qt.alpha(actionBtn.modelData.color, 0.2) : Config.surface0Color
 
                                 Text {
                                     anchors.centerIn: parent
                                     text: actionBtn.modelData.icon
                                     font.family: Config.font
                                     font.pixelSize: 22
-                                    color: actionBtn.isSelected || btnMouse.containsMouse
-                                        ? actionBtn.modelData.color
-                                        : Config.textColor
+                                    color: actionBtn.isSelected || btnMouse.containsMouse ? actionBtn.modelData.color : Config.textColor
                                 }
                             }
 
@@ -206,9 +237,18 @@ PanelWindow {
 
                 Repeater {
                     model: [
-                        { key: "←→", label: "Navigate" },
-                        { key: "Enter", label: "Confirm" },
-                        { key: "Esc", label: "Cancel" }
+                        {
+                            key: "←→",
+                            label: "Navigate"
+                        },
+                        {
+                            key: "Enter",
+                            label: "Confirm"
+                        },
+                        {
+                            key: "Esc",
+                            label: "Cancel"
+                        }
                     ]
 
                     Row {
@@ -253,29 +293,29 @@ PanelWindow {
 
         Keys.onPressed: event => {
             switch (event.key) {
-                case Qt.Key_Escape:
-                    PowerService.hideOverlay();
-                    break;
-                case Qt.Key_Return:
-                case Qt.Key_Enter:
-                    root.executeSelected();
-                    break;
-                case Qt.Key_Left:
-                case Qt.Key_H:
-                    root.navigate(-1);
-                    break;
-                case Qt.Key_Right:
-                case Qt.Key_L:
-                    root.navigate(1);
-                    break;
-                case Qt.Key_1:
-                case Qt.Key_2:
-                case Qt.Key_3:
-                case Qt.Key_4:
-                case Qt.Key_5:
-                    root.selectedIndex = event.key - Qt.Key_1;
-                    root.executeSelected();
-                    break;
+            case Qt.Key_Escape:
+                PowerService.hideOverlay();
+                break;
+            case Qt.Key_Return:
+            case Qt.Key_Enter:
+                root.executeSelected();
+                break;
+            case Qt.Key_Left:
+            case Qt.Key_H:
+                root.navigate(-1);
+                break;
+            case Qt.Key_Right:
+            case Qt.Key_L:
+                root.navigate(1);
+                break;
+            case Qt.Key_1:
+            case Qt.Key_2:
+            case Qt.Key_3:
+            case Qt.Key_4:
+            case Qt.Key_5:
+                root.selectedIndex = event.key - Qt.Key_1;
+                root.executeSelected();
+                break;
             }
             event.accepted = true;
         }

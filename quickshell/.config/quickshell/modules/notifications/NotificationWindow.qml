@@ -14,7 +14,7 @@ PanelWindow {
     // Size settings
     readonly property int contentWidth: 400
     readonly property int contentHeight: 600
-    readonly property int screenMargin: 15
+    readonly property int screenMargin: 10
 
     WlrLayershell.namespace: "qs_modules"
     WlrLayershell.layer: WlrLayer.Overlay

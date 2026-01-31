@@ -16,6 +16,9 @@
   "opacity": {
     "background": 0.9
   },
+  "wallpaper": {
+    "dynamic": true
+  },
   "geometry": {
     "radiusSmall": 5,
     "radius": 10,

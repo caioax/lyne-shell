@@ -6,6 +6,7 @@ import QtQuick.Controls
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
+import "../../components/"
 import qs.services
 import qs.config
 
@@ -46,7 +47,7 @@ PanelWindow {
         width: Math.min(900, root.width - 100)
         height: Math.min(650, root.height - 100)
         radius: Config.radiusLarge
-        color: Config.backgroundColor
+        color: Config.backgroundTransparentColor
         border.color: Qt.alpha(Config.accentColor, 0.2)
         border.width: 1
 
@@ -63,7 +64,9 @@ PanelWindow {
         }
 
         Behavior on opacity {
-            NumberAnimation { duration: Config.animDuration }
+            NumberAnimation {
+                duration: Config.animDuration
+            }
         }
 
         ColumnLayout {
@@ -91,7 +94,9 @@ PanelWindow {
                     color: Config.textColor
                 }
 
-                Item { Layout.fillWidth: true }
+                Item {
+                    Layout.fillWidth: true
+                }
 
                 // Counter
                 Rectangle {
@@ -110,6 +115,16 @@ PanelWindow {
                     }
                 }
 
+                // Lock wallpaper button
+                ToggleButton {
+                    active: WallpaperService.dynamicWallpaper
+                    iconOn: "󱪱"
+                    iconOff: "󰥶"
+                    tooltipText: active ? "Dynamic Wallpaper On" : "Dynamic Wallpaper Off"
+
+                    onClicked: WallpaperService.toggleDynamicWallpaper();
+                }
+
                 // Add button
                 Rectangle {
                     Layout.preferredWidth: 36
@@ -118,7 +133,9 @@ PanelWindow {
                     color: addMouse.containsMouse ? Config.surface2Color : Config.surface1Color
 
                     Behavior on color {
-                        ColorAnimation { duration: Config.animDurationShort }
+                        ColorAnimation {
+                            duration: Config.animDurationShort
+                        }
                     }
 
                     Text {
@@ -152,7 +169,9 @@ PanelWindow {
                     color: randomMouse.containsMouse ? Config.surface2Color : Config.surface1Color
 
                     Behavior on color {
-                        ColorAnimation { duration: Config.animDurationShort }
+                        ColorAnimation {
+                            duration: Config.animDurationShort
+                        }
                     }
 
                     Text {
@@ -186,7 +205,9 @@ PanelWindow {
                     color: closeMouse.containsMouse ? Config.errorColor : Config.surface1Color
 
                     Behavior on color {
-                        ColorAnimation { duration: Config.animDurationShort }
+                        ColorAnimation {
+                            duration: Config.animDurationShort
+                        }
                     }
 
                     Text {
@@ -247,11 +268,15 @@ PanelWindow {
                         border.color: wallpaperItem.isSelected ? Config.successColor : (wallpaperItem.isCurrent ? Config.accentColor : Config.surface2Color)
 
                         Behavior on border.width {
-                            NumberAnimation { duration: Config.animDurationShort }
+                            NumberAnimation {
+                                duration: Config.animDurationShort
+                            }
                         }
 
                         Behavior on border.color {
-                            ColorAnimation { duration: Config.animDurationShort }
+                            ColorAnimation {
+                                duration: Config.animDurationShort
+                            }
                         }
 
                         // Rounded clip thumbnail
@@ -292,7 +317,8 @@ PanelWindow {
                                 color: Config.mutedColor
 
                                 RotationAnimator on rotation {
-                                    from: 0; to: 360
+                                    from: 0
+                                    to: 360
                                     duration: 1000
                                     loops: Animation.Infinite
                                     running: thumbnail.status === Image.Loading
@@ -425,7 +451,9 @@ PanelWindow {
                         opacity: parent.active ? 1 : 0
 
                         Behavior on opacity {
-                            NumberAnimation { duration: Config.animDurationShort }
+                            NumberAnimation {
+                                duration: Config.animDurationShort
+                            }
                         }
                     }
                 }
@@ -461,7 +489,9 @@ PanelWindow {
                         color: Config.subtextColor
                     }
 
-                    Item { Layout.fillWidth: true }
+                    Item {
+                        Layout.fillWidth: true
+                    }
 
                     // Delete confirmation (appears when needed)
                     Row {
@@ -537,7 +567,9 @@ PanelWindow {
                             color: applyMouse.containsMouse ? Config.accentColor : Config.surface1Color
 
                             Behavior on color {
-                                ColorAnimation { duration: Config.animDurationShort }
+                                ColorAnimation {
+                                    duration: Config.animDurationShort
+                                }
                             }
 
                             Row {
@@ -576,7 +608,9 @@ PanelWindow {
                             color: deleteMouse.containsMouse ? Config.errorColor : Config.surface1Color
 
                             Behavior on color {
-                                ColorAnimation { duration: Config.animDurationShort }
+                                ColorAnimation {
+                                    duration: Config.animDurationShort
+                                }
                             }
 
                             Row {

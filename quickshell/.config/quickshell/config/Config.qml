@@ -39,6 +39,11 @@ Singleton {
     readonly property color blueDarkColor: ThemeService.color("blueDark", "#16161e")
 
     // ========================================================================
+    // WALLPAPER
+    // ========================================================================
+    readonly property bool dynamicWallpaper: getState("theme.dynamicWallpaper", true)
+
+    // ========================================================================
     // GEOMETRY & LAYOUT
     // ========================================================================
     readonly property int barHeight: getState("bar.height", 32)

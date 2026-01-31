@@ -92,25 +92,25 @@ function zvm_after_init() {
   zvm_bindkey viins '^V' edit-command-line
 }
 
-# === SHELL-STATE FUNCTION ===
-shell-state() {
-    local config_path="$HOME/.arch-dots/quickshell/.config/quickshell/state.json"
-    local default_editor="nvim"
-    
-    # Extrai editor e remove aspas do jq. 
-    # Adicionado tratamento para caso o valor retornado seja a string "null"
-    local custom_editor=$(jq -r '.system.editor // empty' "$config_path" 2>/dev/null)
+# === DOTS CLI ===
+dots() {
+    local DOTS_DIR="$HOME/.arch-dots"
+    local CMD_DIR="$DOTS_DIR/.data/dots/commands"
 
-    if [[ -n "$custom_editor" && "$custom_editor" != "null" ]] && command -v "${custom_editor%% *}" >/dev/null 2>&1; then
-        eval "$custom_editor $config_path"
+    local cmd="${1:-help}"
+    shift 2>/dev/null
+
+    local cmd_file="$CMD_DIR/$cmd.sh"
+    if [[ -f "$cmd_file" ]]; then
+        source "$cmd_file" "$@"
     else
-        [[ -n "$custom_editor" && "$custom_editor" != "null" ]] && \
-            echo "⚠️  Editor '$custom_editor' not found. Falling back to $default_editor."
-        
-        $default_editor "$config_path"
+        echo "dots: unknown command '$cmd'"
+        echo "Available commands:"
+        for f in "$CMD_DIR"/*.sh; do
+            echo "  $(basename "${f%.sh}")"
+        done
     fi
 }
 
 # === ALIASES ===
 alias all-update='sudo pacman -Syu; yay -Syu; flatpak update'
-alias dots='git -C ~/.arch-dots'

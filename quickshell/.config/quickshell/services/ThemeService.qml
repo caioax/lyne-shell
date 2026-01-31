@@ -4,6 +4,8 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import qs.services
+import qs.config
 
 Singleton {
     id: root
@@ -11,6 +13,10 @@ Singleton {
     // Helper function to shorten the service call
     function getState(path, fallback) {
         return StateService.get(path, fallback);
+    }
+
+    function setState(path, value) {
+        StateService.set(path, value);
     }
 
     // ========================================================================
@@ -24,7 +30,7 @@ Singleton {
     readonly property string fastfetchLogo: Quickshell.env("HOME") + "/.config/fastfetch/arch.png"
     readonly property string wallpaperDir: Quickshell.env("HOME") + "/.local/wallpapers"
 
-    property string currentThemeName: "tokyonight"
+    property string currentThemeName: getState("theme.name", "tokyonight")
     property var availableThemes: []
 
     // Preview data: { "themeName": { name, palette: { background, accent, ... } } }
@@ -68,7 +74,7 @@ Singleton {
     Connections {
         target: StateService
         function onStateLoaded() {
-            const themeName = root.getState("theme.name", "tokyonight");
+            const themeName = root.currentThemeName;
             root.applyTheme(themeName);
         }
     }
@@ -107,12 +113,12 @@ Singleton {
 
         // 2. Update opacity in StateService (user preference, not theme-owned)
         if (data.opacity && data.opacity.background !== undefined) {
-            StateService.set("opacity.background", data.opacity.background);
+            setState("opacity.background", data.opacity.background);
         }
 
         // 3. Save theme name
         currentThemeName = themeName;
-        StateService.set("theme.name", themeName);
+        setState("theme.name", themeName);
 
         // 4. Apply to Hyprland
         _applyHyprland(data.hyprland);

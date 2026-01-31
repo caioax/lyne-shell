@@ -118,11 +118,11 @@ PanelWindow {
                 // Lock wallpaper button
                 ToggleButton {
                     active: WallpaperService.dynamicWallpaper
-                    iconOn: "󱪱"
-                    iconOff: "󰥶"
+                    iconOn: "󰥶"
+                    iconOff: "󱪱"
                     tooltipText: active ? "Dynamic Wallpaper On" : "Dynamic Wallpaper Off"
 
-                    onClicked: WallpaperService.toggleDynamicWallpaper();
+                    onClicked: WallpaperService.toggleDynamicWallpaper()
                 }
 
                 // Add button

@@ -26,7 +26,7 @@ Singleton {
     property var wallpapers: []
     property var selectedWallpapers: []
     property bool confirmDelete: false
-    property bool dynamicWallpaper: getState("wallpaper.dynamic", true)
+    property bool dynamicWallpaper: getState("theme.dynamicWallpaper", true)
 
     readonly property string wallpaperDir: Quickshell.env("HOME") + "/.local/wallpapers"
     readonly property int selectedCount: selectedWallpapers.length
@@ -48,8 +48,10 @@ Singleton {
     // ========================================================================
 
     function toggleDynamicWallpaper() {
-        setState("wallpaper.dynamic", !dynamicWallpaper);
-        dynamicWallpaper = getState("wallpaper.dynamic", true);
+        const dynamic = !getState("theme.dynamicWallpaper", true);
+
+        setState("theme.dynamicWallpaper", dynamic);
+        dynamicWallpaper = dynamic;
     }
 
     function show() {

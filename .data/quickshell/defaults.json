@@ -3,7 +3,8 @@
     "editor": "nvim"
   },
   "theme": {
-    "name": "tokyonight"
+    "name": "tokyonight",
+    "dynamicWallpaper": true
   },
   "nightLight": {
     "enabled": false,
@@ -15,9 +16,6 @@
   },
   "opacity": {
     "background": 0.9
-  },
-  "wallpaper": {
-    "dynamic": true
   },
   "geometry": {
     "radiusSmall": 5,

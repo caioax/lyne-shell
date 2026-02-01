@@ -41,7 +41,7 @@ QsPopupWindow {
                     anchors.centerIn: parent
                     text: NotificationService.dndEnabled ? "󰂛" : "󰂚"
                     font.family: Config.font
-                    font.pixelSize: 18
+                    font.pixelSize: Config.fontSizeLarge
                     color: NotificationService.dndEnabled ? Config.warningColor : Config.accentColor
                 }
             }
@@ -197,7 +197,7 @@ QsPopupWindow {
                         anchors.centerIn: parent
                         text: NotificationService.dndEnabled ? "󰂛" : "󰂜"
                         font.family: Config.font
-                        font.pixelSize: 28
+                        font.pixelSize: Config.fontSizeIconLarge
                         color: NotificationService.dndEnabled ? Config.warningColor : Config.subtextColor
                         opacity: NotificationService.dndEnabled ? 1.0 : 0.5
                     }

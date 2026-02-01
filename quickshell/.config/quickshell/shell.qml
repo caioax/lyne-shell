@@ -117,6 +117,37 @@ ShellRoot {
         source: "./modules/clipboard/ClipboardHistory.qml"
     }
 
+    // Keybinds Overlay
+    Loader {
+        id: keybindsLoader
+        active: false
+        source: "./modules/keybinds/KeybindsOverlay.qml"
+
+        function toggle() {
+            if (active && item) {
+                item.hide();
+                active = false;
+            } else {
+                active = true;
+            }
+        }
+
+        Connections {
+            target: keybindsLoader.item
+            enabled: keybindsLoader.status === Loader.Ready
+
+            function onShowingChanged() {
+                if (keybindsLoader.item && !keybindsLoader.item.showing)
+                    keybindsLoader.active = false;
+            }
+        }
+
+        onStatusChanged: {
+            if (status === Loader.Ready && item)
+                item.showing = true;
+        }
+    }
+
     // =========================================================================
     // GLOBAL SHORTCUTS
     // =========================================================================
@@ -220,5 +251,13 @@ ShellRoot {
         description: "Clipboard history"
 
         onPressed: ClipboardService.toggle()
+    }
+
+    // Shortcut: Keybinds Help
+    GlobalShortcut {
+        name: "keybinds_help"
+        description: "Keybinds help"
+
+        onPressed: keybindsLoader.toggle()
     }
 }

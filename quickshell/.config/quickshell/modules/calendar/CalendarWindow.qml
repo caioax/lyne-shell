@@ -68,7 +68,7 @@ QsPopupWindow {
                     anchors.centerIn: parent
                     text: "󰃭"
                     font.family: Config.font
-                    font.pixelSize: 18
+                    font.pixelSize: Config.fontSizeLarge
                     color: Config.accentColor
                 }
             }
@@ -97,7 +97,7 @@ QsPopupWindow {
                     Text {
                         text: "󰃶"
                         font.family: Config.font
-                        font.pixelSize: 12
+                        font.pixelSize: Config.fontSizeSmall
                         color: Config.subtextColor
                     }
 

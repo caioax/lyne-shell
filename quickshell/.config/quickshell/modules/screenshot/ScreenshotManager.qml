@@ -599,7 +599,7 @@ Scope {
                                         anchors.centerIn: parent
                                         text: root.modeIcons[modelData]
                                         font.family: Config.font
-                                        font.pixelSize: 18
+                                        font.pixelSize: Config.fontSizeIcon
                                         color: root.mode === modelData ? Config.textReverseColor : Config.textColor
                                     }
 
@@ -650,7 +650,7 @@ Scope {
                                     anchors.centerIn: parent
                                     text: "󰄬"
                                     font.family: Config.font
-                                    font.pixelSize: 18
+                                    font.pixelSize: Config.fontSizeIcon
                                     color: confirmArea.containsMouse ? Config.textReverseColor : Config.successColor
                                 }
 
@@ -688,7 +688,7 @@ Scope {
                                     anchors.centerIn: parent
                                     text: "󰑓"
                                     font.family: Config.font
-                                    font.pixelSize: 18
+                                    font.pixelSize: Config.fontSizeIcon
                                     color: Config.warningColor
                                 }
 
@@ -725,7 +725,7 @@ Scope {
                                 anchors.centerIn: parent
                                 text: "󰅖"
                                 font.family: Config.font
-                                font.pixelSize: 16
+                                font.pixelSize: Config.fontSizeLarge
                                 color: cancelArea.containsMouse ? Config.errorColor : Config.subtextColor
                             }
 
@@ -794,7 +794,7 @@ Scope {
                     Text {
                         text: root.mode === "screen" ? "󰍹" : "󰖯"
                         font.family: Config.font
-                        font.pixelSize: 18
+                        font.pixelSize: Config.fontSizeIcon
                         color: Config.accentColor
                         anchors.verticalCenter: parent.verticalCenter
                     }
@@ -817,7 +817,7 @@ Scope {
                             visible: root.selectedWindowClass !== "" && root.selectedWindowClass !== root.selectedWindowTitle
                             text: root.selectedWindowClass
                             font.family: Config.font
-                            font.pixelSize: 10
+                            font.pixelSize: Config.fontSizeSmall
                             color: Config.subtextColor
                         }
                     }

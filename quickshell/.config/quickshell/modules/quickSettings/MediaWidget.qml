@@ -93,7 +93,7 @@ Rectangle {
                 anchors.centerIn: parent
                 text: ""
                 font.family: Config.font
-                font.pixelSize: 30
+                font.pixelSize: Config.fontSizeIcon
                 color: Config.subtextColor
             }
         }
@@ -160,7 +160,7 @@ Rectangle {
                         anchors.centerIn: parent
                         text: MprisService.isPlaying ? "" : ""
                         font.family: Config.font
-                        font.pixelSize: 18
+                        font.pixelSize: Config.fontSizeLarge
                         color: Config.textReverseColor
                         anchors.horizontalCenterOffset: MprisService.isPlaying ? 0 : 2
                     }
@@ -195,7 +195,7 @@ Rectangle {
             anchors.centerIn: parent
             text: btn.icon
             font.family: Config.font
-            font.pixelSize: 22
+            font.pixelSize: Config.fontSizeIcon
             color: mouseArea.containsMouse ? Config.accentColor : Config.textColor
             Behavior on color {
                 ColorAnimation {

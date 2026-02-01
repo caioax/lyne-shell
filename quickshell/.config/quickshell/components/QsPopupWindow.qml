@@ -20,7 +20,7 @@ PanelWindow {
 
     signal closing
 
-    readonly property int screenMargin: 15
+    readonly property int screenMargin: 5
 
     WlrLayershell.namespace: "qs_modules"
     WlrLayershell.layer: WlrLayer.Overlay

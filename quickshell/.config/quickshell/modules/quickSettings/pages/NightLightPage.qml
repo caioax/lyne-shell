@@ -65,7 +65,7 @@ Item {
                     anchors.centerIn: parent
                     text: BrightnessService.nightLightEnabled ? "󰌵" : "󰌶"
                     font.family: Config.font
-                    font.pixelSize: 28
+                    font.pixelSize: Config.fontSizeIconLarge
                     color: BrightnessService.nightLightEnabled ? Config.warningColor : Config.subtextColor
                 }
             }
@@ -86,9 +86,7 @@ Item {
 
                 Text {
                     Layout.alignment: Qt.AlignHCenter
-                    text: BrightnessService.nightLightEnabled
-                        ? "Temperature: " + BrightnessService.nightLightTemperature + "K"
-                        : "Reduces blue light from the screen"
+                    text: BrightnessService.nightLightEnabled ? "Temperature: " + BrightnessService.nightLightTemperature + "K" : "Reduces blue light from the screen"
                     font.family: Config.font
                     font.pixelSize: Config.fontSizeSmall
                     color: Config.subtextColor
@@ -136,7 +134,7 @@ Item {
                         Text {
                             text: "Warmer"
                             font.family: Config.font
-                            font.pixelSize: 10
+                            font.pixelSize: Config.fontSizeSmall
                             color: Config.warningColor
                         }
 
@@ -147,7 +145,7 @@ Item {
                         Text {
                             text: "Cooler"
                             font.family: Config.font
-                            font.pixelSize: 10
+                            font.pixelSize: Config.fontSizeSmall
                             color: Config.subtextColor
                         }
                     }
@@ -246,10 +244,26 @@ Item {
 
                     Repeater {
                         model: [
-                            { label: "Cool", temp: 5500, color: "#fff5e6" },
-                            { label: "Neutral", temp: 4500, color: "#ffcc00" },
-                            { label: "Warm", temp: 3500, color: "#ff9500" },
-                            { label: "Candle", temp: 2500, color: "#ff6b00" }
+                            {
+                                label: "Cool",
+                                temp: 5500,
+                                color: "#fff5e6"
+                            },
+                            {
+                                label: "Neutral",
+                                temp: 4500,
+                                color: "#ffcc00"
+                            },
+                            {
+                                label: "Warm",
+                                temp: 3500,
+                                color: "#ff9500"
+                            },
+                            {
+                                label: "Candle",
+                                temp: 2500,
+                                color: "#ff6b00"
+                            }
                         ]
 
                         delegate: Rectangle {
@@ -281,9 +295,7 @@ Item {
                                 font.family: Config.font
                                 font.pixelSize: Config.fontSizeSmall
                                 font.bold: BrightnessService.nightLightTemperature === modelData.temp
-                                color: presetMouse.containsMouse || BrightnessService.nightLightTemperature === modelData.temp
-                                    ? modelData.color
-                                    : Config.textColor
+                                color: presetMouse.containsMouse || BrightnessService.nightLightTemperature === modelData.temp ? modelData.color : Config.textColor
                             }
 
                             MouseArea {

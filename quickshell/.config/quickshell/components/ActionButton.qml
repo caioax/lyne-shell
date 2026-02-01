@@ -13,7 +13,7 @@ Rectangle {
     property color textColor: Config.textColor
     property color hoverTextColor: root.textColor
     property int size: 36
-    property int iconSize: Config.fontSizeIcon
+    property int iconSize: Config.fontSizeIconSmall
 
     readonly property bool hovered: mouseArea.containsMouse
     readonly property bool pressed: mouseArea.pressed

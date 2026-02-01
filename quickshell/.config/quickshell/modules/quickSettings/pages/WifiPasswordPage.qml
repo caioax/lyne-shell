@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import qs.config
 import qs.services
+import "../../../components/"
 
 Item {
     id: root
@@ -142,30 +143,12 @@ Item {
             spacing: 15
 
             // Cancel Button
-            Button {
+            ClearButton {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 40
-
-                background: Rectangle {
-                    color: parent.down ? Qt.darker(Config.surface1Color, 1.2) : parent.hovered ? Config.surface1Color : "transparent"
-                    radius: Config.radius
-                    border.width: 1
-                    border.color: Config.surface2Color
-
-                    Behavior on color {
-                        ColorAnimation {
-                            duration: 100
-                        }
-                    }
-                }
-
-                contentItem: Text {
-                    text: "Cancel"
-                    color: Config.subtextColor
-                    font.family: Config.font
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                }
+                icon: "󰜺"
+                text: "Cancel"
+                baseColor: Config.subtextColor
 
                 onClicked: {
                     passInput.text = "";
@@ -175,36 +158,24 @@ Item {
             }
 
             // Connect Button
-            Button {
+            ActionButton {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 40
-                enabled: passInput.text.length >= 8 // Basic WPA2 validation (min 8 chars)
-                opacity: enabled ? 1.0 : 0.5
-
-                background: Rectangle {
-                    color: parent.down ? Qt.darker(Config.accentColor, 1.1) : Config.accentColor
-                    radius: Config.radius
-
-                    Behavior on color {
-                        ColorAnimation {
-                            duration: 100
-                        }
-                    }
-                }
-
-                contentItem: Text {
-                    text: "Connect"
-                    color: Config.textReverseColor
-                    font.bold: true
-                    font.family: Config.font
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                }
+                icon: ""
+                text: "Connect"
+                size: 40
+                baseColor: Config.accentColor
+                hoverColor: Qt.darker(Config.accentColor, 1.1)
+                textColor: Config.textReverseColor
+                hoverTextColor: Config.textReverseColor
+                opacity: passInput.text.length >= 8 ? 1.0 : 0.5
 
                 onClicked: {
-                    root.connectClicked(passInput.text);
-                    passInput.text = "";
-                    showPassToggle.checked = false;
+                    if (passInput.text.length >= 8) {
+                        root.connectClicked(passInput.text);
+                        passInput.text = "";
+                        showPassToggle.checked = false;
+                    }
                 }
             }
         }

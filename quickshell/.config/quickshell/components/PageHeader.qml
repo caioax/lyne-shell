@@ -32,7 +32,7 @@ RowLayout {
             anchors.centerIn: parent
             text: root.icon
             font.family: Config.font
-            font.pixelSize: 18
+            font.pixelSize: Config.fontSizeLarge
             color: root.iconColor
         }
     }

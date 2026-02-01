@@ -1,77 +1,58 @@
 pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls
 import qs.config
 
-Button {
+Rectangle {
     id: root
 
-    // --- Properties ---
-    property bool loading: false         // Controls whether to show the Spinner or the Icon
-    property int size: 30                // Button size
+    property bool loading: false
+    property int size: 36
     property string tooltipText: "Refresh"
 
-    // --- Fine Tuning (Offsets) ---
-    property real iconOffsetX: 0.5
-    property real iconOffsetY: 0.5
+    signal clicked
 
-    // --- Layout ---
     implicitWidth: size
     implicitHeight: size
     Layout.preferredWidth: size
     Layout.preferredHeight: size
+    radius: Config.radius
 
-    // --- Background ---
-    background: Rectangle {
-        radius: root.height / 2
-
-        color: {
-            if (root.loading)
-                return Config.accentColor;
-            if (root.hovered)
-                return Config.surface2Color
-            return Config.surface1Color;
-        }
-
-        Behavior on color {
-            ColorAnimation {
-                duration: Config.animDuration
-            }
-        }
+    color: {
+        if (root.loading)
+            return Config.accentColor;
+        if (mouseArea.containsMouse)
+            return Config.surface2Color;
+        return Config.surface1Color;
     }
 
-    // --- Content ---
-    contentItem: Item {
-        anchors.centerIn: root
-
-        // Refresh Icon (Visible when NOT loading)
-        Text {
-            anchors.centerIn: parent
-
-            // Manual offsets
-            anchors.horizontalCenterOffset: root.iconOffsetX
-            anchors.verticalCenterOffset: root.iconOffsetY
-
-            text: ""
-            font.family: Config.font
-            font.pixelSize: Config.fontSizeNormal
-            color: Config.textColor
-
-            visible: !root.loading
-        }
-
-        // Spinner (Visible when loading)
-        Spinner {
-            anchors.centerIn: parent
-            running: root.loading
-            size: Config.fontSizeNormal + 2
-            color: Config.textReverseColor
-        }
+    Behavior on color {
+        ColorAnimation { duration: Config.animDurationShort }
     }
 
-    // --- Tooltip ---
-    ToolTip.visible: root.hovered && root.tooltipText !== ""
-    ToolTip.text: root.tooltipText
-    ToolTip.delay: 500
+    // Refresh Icon (visible when NOT loading)
+    Text {
+        anchors.centerIn: parent
+        text: "󰑐"
+        font.family: Config.font
+        font.pixelSize: Config.fontSizeIcon
+        color: Config.textColor
+        visible: !root.loading
+    }
+
+    // Spinner (visible when loading)
+    Spinner {
+        anchors.centerIn: parent
+        running: root.loading
+        size: Config.fontSizeIcon
+        color: Config.textReverseColor
+    }
+
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        hoverEnabled: true
+        cursorShape: Qt.PointingHandCursor
+        onClicked: root.clicked()
+    }
 }

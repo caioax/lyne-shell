@@ -142,7 +142,7 @@ Item {
             Layout.fillWidth: true
         }
 
-        // BUTTON GRID (Large ToggleButton style)
+        // BUTTON GRID
         GridLayout {
             columns: 2
             columnSpacing: 10

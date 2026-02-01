@@ -88,7 +88,7 @@ PanelWindow {
                             anchors.centerIn: parent
                             text: "󰅍"
                             font.family: Config.font
-                            font.pixelSize: 18
+                            font.pixelSize: Config.fontSizeLarge
                             color: Config.accentColor
                         }
                     }

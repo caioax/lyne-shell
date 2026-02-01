@@ -32,14 +32,12 @@ Item {
             }
 
             // Visibility Button
-            ToggleButton {
+            ActionButton {
                 visible: BluetoothService.isPowered
-                active: BluetoothService.isDiscoverable
-                iconOffsetX: 0.5
-                iconOffsetY: 0.5
-                iconOn: ""
-                iconOff: ""
-                tooltipText: active ? "Visible to all" : "Invisible"
+                icon: BluetoothService.isDiscoverable ? "󰈈" : "󰈉"
+                baseColor: BluetoothService.isDiscoverable ? Config.accentColor : Config.surface1Color
+                hoverColor: BluetoothService.isDiscoverable ? Config.accentColor : Config.surface2Color
+                textColor: BluetoothService.isDiscoverable ? Config.textReverseColor : Config.textColor
                 onClicked: BluetoothService.toggleDiscoverable()
             }
 
@@ -168,7 +166,7 @@ Item {
                             return "󰂳";
                         }
                         font.family: Config.font
-                        font.pixelSize: 28
+                        font.pixelSize: Config.fontSizeIconLarge
                         color: Config.subtextColor
                         opacity: 0.5
                     }

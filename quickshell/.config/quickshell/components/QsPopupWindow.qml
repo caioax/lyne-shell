@@ -105,6 +105,8 @@ PanelWindow {
             anchors.top: parent.top
             color: Config.backgroundTransparentColor
             radius: Config.radiusLarge
+            border.width: 1.0
+            border.color: Config.surface2Color
             clip: true
 
             transformOrigin: root.anchorSide === "left" ? Item.TopLeft : Item.TopRight

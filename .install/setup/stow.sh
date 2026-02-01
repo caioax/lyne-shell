@@ -75,7 +75,7 @@ get_stow_targets() {
             targets+=("$HOME/.tmux.conf")
             ;;
         "local")
-            targets+=("$HOME/.local/scripts" "$HOME/.local/wallpapers")
+            targets+=("$HOME/.local/scripts" "$HOME/.local/wallpapers" "$HOME/.local/themes")
             ;;
         "kde")
             targets+=("$HOME/.config/kdeglobals")

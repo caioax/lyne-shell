@@ -339,8 +339,8 @@ PanelWindow {
                     property bool isCurrent: modelData === WallpaperService.currentWallpaper
                     property bool isSelected: WallpaperService.isSelected(modelData)
                     property bool isFav: WallpaperService.isFavorite(modelData)
-                    property bool isTheme: WallpaperService.isThemeWallpaper(modelData)
                     property bool isActiveForTheme: root.inThemePage && WallpaperService.isActiveThemeWallpaper(modelData, WallpaperService.themeFilter)
+                    property string overviewThemeName: (!root.inThemePage && WallpaperService.currentCategory === "themes") ? WallpaperService.themeForActiveWallpaper(modelData) : ""
                     property string displayName: {
                         const name = WallpaperService.fileName(modelData);
                         const dot = name.lastIndexOf(".");
@@ -526,9 +526,9 @@ PanelWindow {
                             }
                         }
 
-                        // Theme badge (bottom-left, only outside theme page)
+                        // Theme badge (bottom-left, themes overview)
                         Rectangle {
-                            visible: wallpaperItem.isTheme && !root.inThemePage && WallpaperService.currentCategory !== "all"
+                            visible: wallpaperItem.overviewThemeName !== ""
                             anchors.bottom: parent.bottom
                             anchors.left: parent.left
                             anchors.margins: 8
@@ -540,7 +540,7 @@ PanelWindow {
                             Text {
                                 id: themeBadgeText
                                 anchors.centerIn: parent
-                                text: "󰏘 " + WallpaperService.themeNameFromPath(wallpaperItem.modelData)
+                                text: "󰏘 " + wallpaperItem.overviewThemeName
                                 font.family: Config.font
                                 font.pixelSize: 10
                                 color: Config.accentColor

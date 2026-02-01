@@ -39,8 +39,23 @@ Singleton {
 
     readonly property string wallpaperDir: Quickshell.env("HOME") + "/.local/wallpapers"
     readonly property string themeWallpaperDir: wallpaperDir + "/themes"
-    readonly property string themesConfigDir: Quickshell.env("HOME") + "/.arch-dots/.data/themes"
+    readonly property string themesConfigDir: Quickshell.env("HOME") + "/.local/themes"
     readonly property int selectedCount: selectedWallpapers.length
+
+    // Active wallpaper paths per theme (for the Themes overview)
+    readonly property var activeThemeWallpapers: {
+        const result = [];
+        const themes = ThemeService.availableThemes;
+        const previews = ThemeService.themePreviews;
+        for (let i = 0; i < themes.length; i++) {
+            const name = themes[i];
+            const preview = previews[name];
+            if (preview && preview.wallpaper) {
+                result.push(wallpaperDir + "/" + preview.wallpaper);
+            }
+        }
+        return result;
+    }
 
     // Filtered wallpaper list based on search + category
     readonly property var filteredWallpapers: {
@@ -49,14 +64,14 @@ Singleton {
         if (currentCategory === "themes" && themeFilter) {
             // Show wallpapers from the theme's folder
             list = root.themeWallpapers;
+        } else if (currentCategory === "themes") {
+            // Overview: show each theme's active wallpaper
+            list = root.activeThemeWallpapers;
         } else {
             list = root.wallpapers;
 
-            // Category filter
             if (currentCategory === "favorites")
                 list = list.filter(w => favorites.includes(fileName(w)));
-            else if (currentCategory === "themes")
-                list = list.filter(w => fileName(w).startsWith("theme-"));
         }
 
         // Search filter
@@ -145,6 +160,19 @@ Singleton {
     }
 
     // Get the active wallpaper filename for a theme from its JSON
+    // Get which theme a wallpaper is active for (from overview list)
+    function themeForActiveWallpaper(wallpaperPath: string): string {
+        const relativePath = wallpaperPath.replace(wallpaperDir + "/", "");
+        const themes = ThemeService.availableThemes;
+        const previews = ThemeService.themePreviews;
+        for (let i = 0; i < themes.length; i++) {
+            const preview = previews[themes[i]];
+            if (preview && preview.wallpaper === relativePath)
+                return themes[i];
+        }
+        return "";
+    }
+
     function getThemeActiveWallpaper(themeName: string): string {
         // This is read from the theme previews loaded by ThemeService
         const preview = ThemeService.themePreviews[themeName];

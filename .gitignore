@@ -13,6 +13,10 @@ hyprland/.config/uwsm/env.d/*
 local/.local/wallpapers/*
 !local/.local/wallpapers/.gitkeep
 
+# Local themes (copied from .data/themes/ on installation)
+local/.local/themes/*
+!local/.local/themes/.gitkeep
+
 # Monitor and workspace configs (machine-specific)
 # These files are created by the installation script
 # and can be edited by the user or by nwg-displays/workspace-manager

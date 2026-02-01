@@ -23,7 +23,7 @@ Singleton {
     // PROPERTIES
     // ========================================================================
 
-    readonly property string themesDir: Quickshell.env("HOME") + "/.arch-dots/.data/themes"
+    readonly property string themesDir: Quickshell.env("HOME") + "/.local/themes"
     readonly property string kittyThemePath: Quickshell.env("HOME") + "/.config/kitty/current-theme.conf"
     readonly property string nvimThemePath: Quickshell.env("HOME") + "/.config/nvim/current-theme.txt"
     readonly property string fastfetchBaseLogo: Quickshell.env("HOME") + "/.config/fastfetch/arch-base.png"
@@ -186,7 +186,7 @@ Singleton {
 
         const path = wallpaperDir + "/" + wallpaperFile;
 
-        wallpaperProc.command = ["bash", "-c", "[ -f '" + path + "' ] && swww img '" + path + "'" + " --transition-type grow --transition-duration 1 --transition-fps 60 --transition-step 90" + " && echo '" + path + "' > '" + wallpaperDir + "/.current'" + " || echo '[ThemeService] Wallpaper not found: " + wallpaperFile + "' >&2"];
+        wallpaperProc.command = ["bash", "-c", "[ -f '" + path + "' ] && swww img '" + path + "'" + " --transition-type grow --transition-duration 1 --transition-fps 60 --transition-step 90" + " || echo '[ThemeService] Wallpaper not found: " + wallpaperFile + "' >&2"];
         wallpaperProc.running = true;
     }
 

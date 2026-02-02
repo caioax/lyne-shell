@@ -5,21 +5,27 @@ Arch Linux dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/),
 ## Screenshots
 
 ### Tokyo Night
+
 ![Tokyo Night](./.data/assets/tokyonight.png)
 
 ### Catppuccin Mocha
+
 ![Catppuccin Mocha](./.data/assets/catppuccin-mocha.png)
 
 ### Dracula
+
 ![Dracula](./.data/assets/dracula.png)
 
 ### Gruvbox Dark
+
 ![Gruvbox Dark](./.data/assets/gruvbox-dark.png)
 
 ### Nord
+
 ![Nord](./.data/assets/nord.png)
 
 ### Rose Pine
+
 ![Rose Pine](./.data/assets/rosepine.png)
 
 ## Features
@@ -32,23 +38,32 @@ Arch Linux dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/),
 - **Tmux** - Terminal multiplexer with seamless Neovim navigation (Smart Splits)
 - **Kitty** - GPU-accelerated terminal with dynamic theme switching
 - **Zsh** - Oh-My-Zsh with autosuggestions, syntax highlighting, vi-mode, and Powerlevel10k
+- **Lyne CLI** - Built-in command-line tool for managing the dotfiles
 
 ### Theme System
 
 Switching themes from the Quick Settings panel applies colors instantly to:
 
-| Component | What changes |
-| --- | --- |
-| QuickShell (bar, launcher, notifications) | All UI colors |
-| Kitty | Terminal colors, cursor, tabs, borders |
-| Neovim | Colorscheme (sent to all running instances) |
-| Hyprland | Active/inactive border colors, shadow |
-| Fastfetch | Logo recolored to match accent |
-| Wallpaper | Theme-linked wallpaper applied via swww |
+| Component                                 | What changes                                |
+| ----------------------------------------- | ------------------------------------------- |
+| QuickShell (bar, launcher, notifications) | All UI colors                               |
+| Kitty                                     | Terminal colors, cursor, tabs, borders      |
+| Neovim                                    | Colorscheme (sent to all running instances) |
+| Hyprland                                  | Active/inactive border colors, shadow       |
+| Fastfetch                                 | Logo recolored to match accent              |
+| Wallpaper                                 | Theme-linked wallpaper applied via swww     |
 
 No restarts required.
 
-## Quick Start
+## Installation
+
+### Requirements
+
+- Arch Linux
+- Git
+- Internet connection
+
+### Steps
 
 ```bash
 git clone https://github.com/caioax/lyne-shell.git ~/.lyne-shell
@@ -56,105 +71,165 @@ cd ~/.lyne-shell
 ./install.sh
 ```
 
-The installer is interactive and lets you pick which package categories to install. See [.install/README.md](.install/README.md) for advanced usage.
+The installer is interactive and lets you pick which package categories to install. After finishing, it will prompt you to reboot.
+
+| Category     | Packages                           |
+| ------------ | ---------------------------------- |
+| `core`       | Hyprland, UWSM, portal             |
+| `terminal`   | Kitty, Zsh, Tmux, Fastfetch        |
+| `editor`     | Neovim + development tools         |
+| `apps`       | Dolphin, Zen Browser, Spotify, mpv |
+| `utils`      | Clipboard, playerctl, audio, etc   |
+| `fonts`      | Nerd Fonts, cursors, icons         |
+| `quickshell` | QuickShell bar/shell               |
+| `theming`    | Qt/GTK theming                     |
+| `nvidia`     | NVIDIA drivers (only if needed)    |
+
+### Advanced Options
+
+```bash
+./install.sh --stow-only       # Only create symlinks
+./install.sh --setup-only      # Only run Hyprland setup
+./install.sh --packages core   # Install a single category
+```
+
+See [.install/README.md](.install/README.md) for more details.
+
+## Lyne CLI
+
+Lyne Shell includes a built-in CLI tool called `lyne` for managing the dotfiles. It is loaded automatically via `.zshrc`.
+
+### Usage
+
+```
+lyne <command> [args...]
+```
+
+### Commands
+
+| Command           | Description                                            |
+| ----------------- | ------------------------------------------------------ |
+| `lyne help`       | Show available commands                                |
+| `lyne init`       | First-time setup (mark migrations as done, sync state) |
+| `lyne update`     | Pull latest changes, sync state, and run migrations    |
+| `lyne git <args>` | Run git commands in the dotfiles repo                  |
+| `lyne state`      | Open `state.json` in your configured editor            |
+| `lyne reload`     | Reload QuickShell                                      |
+
+### Examples
+
+```bash
+# Pull the latest changes and apply migrations
+lyne update
+
+# Check the git status of the dotfiles
+lyne git status
+
+# Edit the QuickShell state configuration
+lyne state
+
+# Reload QuickShell after manual changes
+lyne reload
+```
 
 ## Keybindings
 
 ### Apps
 
-| Keybind | Action |
-| --- | --- |
-| `Super + Return` | Terminal (Kitty) |
-| `Super + D` | File Manager (Dolphin) |
-| `Super + Z` | Browser (Zen Browser) |
-| `Super + Space` | App Launcher |
+| Keybind          | Action                 |
+| ---------------- | ---------------------- |
+| `Super + Return` | Terminal (Kitty)       |
+| `Super + D`      | File Manager (Dolphin) |
+| `Super + Z`      | Browser (Zen Browser)  |
+| `Super + Space`  | App Launcher           |
 
 ### Windows
 
-| Keybind | Action |
-| --- | --- |
-| `Super + Q` | Kill window |
-| `Super + F` | Fullscreen |
-| `Super + Shift + F` | Fullscreen (pinned) |
-| `Super + Shift + Space` | Toggle floating |
-| `Super + Tab` | Toggle split |
-| `Super + P` | Pseudo tile |
-| `Super + H J K L` | Move focus (left/down/up/right) |
-| `Super + Shift + H J K L` | Move window |
-| `Super + Alt + H J K L` | Resize window |
+| Keybind                   | Action                          |
+| ------------------------- | ------------------------------- |
+| `Super + Q`               | Kill window                     |
+| `Super + F`               | Fullscreen                      |
+| `Super + Shift + F`       | Fullscreen (pinned)             |
+| `Super + Shift + Space`   | Toggle floating                 |
+| `Super + Tab`             | Toggle split                    |
+| `Super + P`               | Pseudo tile                     |
+| `Super + H J K L`         | Move focus (left/down/up/right) |
+| `Super + Shift + H J K L` | Move window                     |
+| `Super + Alt + H J K L`   | Resize window                   |
 
 ### Workspaces
 
-| Keybind | Action |
-| --- | --- |
-| `Super + 1-0` | Switch to workspace 1-10 |
-| `Super + Shift + 1-0` | Move window to workspace 1-10 |
-| `Super + Ctrl + H / L` | Previous / Next workspace |
+| Keybind                        | Action                               |
+| ------------------------------ | ------------------------------------ |
+| `Super + 1-0`                  | Switch to workspace 1-10             |
+| `Super + Shift + 1-0`          | Move window to workspace 1-10        |
+| `Super + Ctrl + H / L`         | Previous / Next workspace            |
 | `Super + Ctrl + Shift + H / L` | Move window to prev / next workspace |
-| `Super + W` | Toggle WhatsApp workspace |
-| `Super + M` | Toggle Spotify workspace |
-| `Super + S` | Toggle Magic workspace |
+| `Super + W`                    | Toggle WhatsApp workspace            |
+| `Super + M`                    | Toggle Spotify workspace             |
+| `Super + S`                    | Toggle Magic workspace               |
 
 ### System
 
-| Keybind | Action |
-| --- | --- |
-| `Super + B` | Wallpaper Picker |
-| `Super + /` | Keybinds Help |
-| `Super + V` | Clipboard History |
-| `Super + End` | Power Menu |
-| `Print` | Screenshot |
-| `Super + = / -` | Zoom in / out |
+| Keybind             | Action            |
+| ------------------- | ----------------- |
+| `Super + B`         | Wallpaper Picker  |
+| `Super + /`         | Keybinds Help     |
+| `Super + V`         | Clipboard History |
+| `Super + End`       | Power Menu        |
+| `Print`             | Screenshot        |
+| `Super + = / -`     | Zoom in / out     |
 | `Super + Shift + R` | Reload QuickShell |
 
 ### Media
 
-| Keybind | Action |
-| --- | --- |
-| `Volume Keys` | Volume up / down / mute |
-| `Brightness Keys` | Brightness up / down |
-| `Media Keys` | Play / Pause / Next / Previous |
+| Keybind           | Action                         |
+| ----------------- | ------------------------------ |
+| `Volume Keys`     | Volume up / down / mute        |
+| `Brightness Keys` | Brightness up / down           |
+| `Media Keys`      | Play / Pause / Next / Previous |
 
 ## Structure
 
 Each top-level directory is a [GNU Stow](https://www.gnu.org/software/stow/) package that gets symlinked into `$HOME`.
 
-| Directory | Description |
-| --- | --- |
-| `hyprland/` | Hyprland compositor config (appearance, keybinds, rules) |
-| `quickshell/` | QML shell: bar, launcher, notifications, quick settings |
-| `nvim/` | Neovim config with lazy.nvim plugin manager |
-| `tmux/` | Tmux config with TPM and Smart Splits integration |
-| `kitty/` | Kitty terminal config with dynamic themes |
-| `zsh/` | Zsh config with Oh-My-Zsh and Powerlevel10k |
-| `local/` | Custom scripts, wallpapers (`~/.local/wallpapers/`), and themes (`~/.local/themes/`) |
-| `fastfetch/` | System info display config and dynamic logo |
-| `theming/` | GTK3/4 and Qt5/6 theme settings |
-| `kde/` | KDE Plasma global settings (colors, icons, fonts) |
+| Directory     | Description                                                                          |
+| ------------- | ------------------------------------------------------------------------------------ |
+| `hyprland/`   | Hyprland compositor config (appearance, keybinds, rules)                             |
+| `quickshell/` | QML shell: bar, launcher, notifications, quick settings                              |
+| `nvim/`       | Neovim config with lazy.nvim plugin manager                                          |
+| `tmux/`       | Tmux config with TPM and Smart Splits integration                                    |
+| `kitty/`      | Kitty terminal config with dynamic themes                                            |
+| `zsh/`        | Zsh config with Oh-My-Zsh and Powerlevel10k                                          |
+| `local/`      | Custom scripts, wallpapers (`~/.local/wallpapers/`), and themes (`~/.local/themes/`) |
+| `fastfetch/`  | System info display config and dynamic logo                                          |
+| `theming/`    | GTK3/4 and Qt5/6 theme settings                                                      |
+| `kde/`        | KDE Plasma global settings (colors, icons, fonts)                                    |
 
 ### Other Directories
 
-| Directory | Description |
-| --- | --- |
-| `.install/` | Installation scripts and package lists |
-| `.data/` | Templates, default themes, and default wallpapers |
+| Directory         | Description                                       |
+| ----------------- | ------------------------------------------------- |
+| `.install/`       | Installation scripts and package lists            |
+| `.data/`          | Templates, default themes, and default wallpapers |
+| `.data/lyne-cli/` | CLI commands, libraries, and migrations           |
 
 ## Tech Stack
 
-| Component | Tool |
-| --- | --- |
-| Compositor | Hyprland |
-| Session Manager | UWSM |
-| Shell/Bar | QuickShell |
-| Terminal | Kitty |
-| Shell | Zsh + Oh-My-Zsh |
-| Multiplexer | Tmux |
-| Editor | Neovim |
-| Wallpaper | swww |
-| File Manager | Dolphin |
-| Browser | Zen Browser |
-| AUR Helper | yay |
-| Dotfile Manager | GNU Stow |
+| Component       | Tool            |
+| --------------- | --------------- |
+| Compositor      | Hyprland        |
+| Session Manager | UWSM            |
+| Desktop Shell   | QuickShell      |
+| Terminal        | Kitty           |
+| Shell           | Zsh + Oh-My-Zsh |
+| Multiplexer     | Tmux            |
+| Editor          | Neovim          |
+| Wallpaper       | swww            |
+| File Manager    | Dolphin         |
+| Browser         | Zen Browser     |
+| AUR Helper      | yay             |
+| Dotfile Manager | GNU Stow        |
 
 ## Customization
 

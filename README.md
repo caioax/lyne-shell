@@ -51,7 +51,7 @@ No restarts required.
 ## Quick Start
 
 ```bash
-git clone https://github.com/caioax/arch-dots.git ~/.arch-dots
+git clone https://github.com/caioax/.arch-dots.git ~/.arch-dots
 cd ~/.arch-dots
 ./install.sh
 ```

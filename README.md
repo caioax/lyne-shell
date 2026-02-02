@@ -158,7 +158,7 @@ Each top-level directory is a [GNU Stow](https://www.gnu.org/software/stow/) pac
 
 ## Customization
 
-Machine-specific configs are kept in `hyprland/.config/hypr/local/` and are not tracked by git. The install script generates these from templates in `.data/hyprland/templates/` on first run:
+Machine-specific configs are kept in `~/.config/hypr/local/` and are not tracked by git. The install script generates these from templates in `.data/hyprland/templates/` on first run:
 
 - `monitors.conf` - Monitor layout
 - `workspaces.conf` - Workspace mapping

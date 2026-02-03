@@ -1,4 +1,4 @@
-# 🐚 Lyne Shell
+# 📦 Lyne Dots
 
 > Arch Linux dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/), featuring a Hyprland (Wayland) desktop environment with a custom QuickShell bar and a unified theme system that applies across the entire setup.
 
@@ -103,7 +103,7 @@ See [.install/README.md](.install/README.md) for more details.
 
 ## 🔧 Lyne CLI
 
-Lyne Shell includes a built-in CLI tool called `lyne` for managing the dotfiles. It is loaded automatically via `.zshrc`.
+Lyne Dots includes a built-in CLI tool called `lyne` for managing the dotfiles. It is loaded automatically via `.zshrc`.
 
 ### Usage
 

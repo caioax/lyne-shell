@@ -266,3 +266,9 @@ Wallpapers live in `~/.local/wallpapers/` (git-ignored, defaults copied on insta
 ### Adding Themes
 
 Themes are JSON files in `~/.local/themes/` (git-ignored, defaults copied from `.data/themes/` on install). Each theme defines colors for the palette, terminal, Hyprland, Neovim, and an optional wallpaper path. To create a new theme, copy an existing one and modify the values.
+
+---
+
+## 🙏 Credits
+
+- Screenshot implementation inspired by [HyprQuickFrame](https://github.com/Ronin-CK/HyprQuickFrame)

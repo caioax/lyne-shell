@@ -7,6 +7,7 @@ import Quickshell.Hyprland
 import Quickshell.Wayland
 import qs.services
 import "./modules/bar/"
+import "./modules/screenshot/"
 
 ShellRoot {
     id: root

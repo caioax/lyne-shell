@@ -36,6 +36,10 @@ Scope {
     property var hyprlandMonitor: Hyprland.focusedMonitor
     property var activeScreen: null
 
+    // Fresh data from hyprctl (updated on each capture)
+    property var windowsFromIpc: []
+    property var monitorsFromIpc: []
+
     readonly property var modes: ["region", "window", "screen"]
     readonly property var modeIcons: ({
             region: "󰩭",
@@ -94,6 +98,78 @@ Scope {
     }
 
     // =========================================================================
+    // WINDOW LIST FROM IPC (fresh data each capture)
+    // =========================================================================
+
+    // First: get monitors data
+    Process {
+        id: hyprctlMonitors
+        command: ["hyprctl", "monitors", "-j"]
+        stdout: SplitParser {
+            splitMarker: ""
+            onRead: data => {
+                try {
+                    root.monitorsFromIpc = JSON.parse(data);
+                    console.log("[DEBUG] Parsed monitors:", root.monitorsFromIpc.length);
+                } catch (e) {
+                    console.log("[Screenshot] Failed to parse hyprctl monitors:", e);
+                    root.monitorsFromIpc = [];
+                }
+            }
+        }
+        onExited: {
+            // After monitors, get clients
+            hyprctlClients.running = true;
+        }
+    }
+
+    // Second: get clients/windows data
+    Process {
+        id: hyprctlClients
+        command: ["hyprctl", "clients", "-j"]
+        stdout: SplitParser {
+            splitMarker: ""
+            onRead: data => {
+                try {
+                    root.windowsFromIpc = JSON.parse(data);
+                } catch (e) {
+                    console.log("[Screenshot] Failed to parse hyprctl clients:", e);
+                    root.windowsFromIpc = [];
+                }
+            }
+        }
+        onExited: {
+            // After getting window data, capture the screen with grim
+            root.startGrimCapture();
+        }
+    }
+
+    // Third: capture screen with grim (must complete before showing overlay)
+    Process {
+        id: grimCapture
+        onStarted: {
+            console.log("[DEBUG] grim started with path:", root.tempPath);
+        }
+        onExited: (exitCode, exitStatus) => {
+            console.log("[DEBUG] grim exited with code:", exitCode, "status:", exitStatus);
+            // Only show overlay after grim has finished capturing
+            root.active = true;
+        }
+    }
+
+    function refreshWindowList() {
+        // Start the chain: monitors -> clients -> grim -> show overlay
+        hyprctlMonitors.running = true;
+    }
+
+    function startGrimCapture() {
+        // Set command dynamically with current tempPath
+        console.log("[DEBUG] startGrimCapture - tempPath:", root.tempPath);
+        grimCapture.command = ["grim", root.tempPath];
+        grimCapture.running = true;
+    }
+
+    // =========================================================================
     // FUNCTIONS
     // =========================================================================
 
@@ -106,13 +182,20 @@ Scope {
             if (screen.name === monitor.name) {
                 root.activeScreen = screen;
                 root.hyprlandMonitor = monitor;
-                root.active = true;
+                // Don't set active here - it's set after grim captures
                 return;
             }
         }
     }
 
     function startCapture() {
+        // Prepare state and temp path first
+        prepareCapture();
+        // Start the chain: monitors -> clients -> grim -> show overlay
+        refreshWindowList();
+    }
+
+    function prepareCapture() {
         // Reset state
         root.mode = "region";
         root.resetSelection();
@@ -130,23 +213,19 @@ Scope {
             }
         }
 
-        // Create temp path and capture
+        // Create temp path for grim
         const timestamp = Date.now();
         root.tempPath = Quickshell.cachePath(`screenshot-${timestamp}.png`);
-
-        // Capture with grim and show overlay
-        Quickshell.execDetached(["grim", root.tempPath]);
-
-        // Small delay to ensure capture is done
-        showTimer.start();
     }
 
     function cancelCapture() {
         root.active = false;
         root.hasSelection = false;
-        if (root.tempPath !== "") {
-            Quickshell.execDetached(["rm", "-f", root.tempPath]);
-        }
+        // Temporarily disabled for debugging
+        // if (root.tempPath !== "") {
+        //     Quickshell.execDetached(["rm", "-f", root.tempPath]);
+        // }
+        console.log("[DEBUG] Cancelled - temp file kept at:", root.tempPath);
     }
 
     function resetSelection() {
@@ -188,6 +267,11 @@ Scope {
         const scaledWidth = Math.round(width * scale);
         const scaledHeight = Math.round(height * scale);
 
+        console.log("[DEBUG] saveScreenshot - tempPath:", root.tempPath);
+        console.log("[DEBUG] saveScreenshot - selection:", x, y, width, height);
+        console.log("[DEBUG] saveScreenshot - monitor offset:", monitorX, monitorY, "scale:", scale);
+        console.log("[DEBUG] saveScreenshot - crop:", scaledWidth + "x" + scaledHeight + "+" + scaledX + "+" + scaledY);
+
         // Output path
         const picturesDir = Quickshell.env("XDG_PICTURES_DIR") || (Quickshell.env("HOME") + "/Pictures/Screenshots");
         const timestamp = Qt.formatDateTime(new Date(), "yyyy-MM-dd_hh-mm-ss");
@@ -195,6 +279,8 @@ Scope {
 
         // Build and execute command
         const cmd = [`mkdir -p "${picturesDir}"`, `magick "${root.tempPath}" -crop ${scaledWidth}x${scaledHeight}+${scaledX}+${scaledY} +repage "${outputPath}"`, `wl-copy < "${outputPath}"`, `rm -f "${root.tempPath}"`, `notify-send -i accessories-screenshot -a "Screenshot" "Screenshot Saved!" "Copied to clipboard: ${outputPath}"`].join(" && ");
+
+        console.log("[DEBUG] saveScreenshot - command:", cmd);
 
         // Hide overlay and execute
         root.active = false;
@@ -219,19 +305,27 @@ Scope {
     }
 
     // =========================================================================
-    // OVERLAY WINDOWS (one per screen)
+    // OVERLAY WINDOWS (one per screen) - only created after grim capture
     // =========================================================================
 
-    Variants {
-        model: Quickshell.screens
+    Loader {
+        active: root.active
+        sourceComponent: overlayComponent
+    }
 
-        delegate: PanelWindow {
-            id: window
+    Component {
+        id: overlayComponent
 
-            required property var modelData
+        Variants {
+            model: Quickshell.screens
 
-            screen: modelData
-            visible: root.active
+            delegate: PanelWindow {
+                id: window
+
+                required property var modelData
+
+                screen: modelData
+                visible: true  // Always visible when loaded (Loader controls creation)
 
             anchors {
                 top: true
@@ -248,45 +342,50 @@ Scope {
             // Monitor info
             property var hyprMonitor: Hyprland.monitorFor(modelData)
             property bool isActiveMonitor: modelData === root.activeScreen
-            property var workspace: hyprMonitor?.activeWorkspace
-            property var windowList: workspace?.toplevels ?? []
 
             function findWindowAt(mouseX, mouseY) {
-                // Check if the monitor and window list are available
-                if (!hyprMonitor || !windowList)
-                    return null;
-
-                const monitorIpc = hyprMonitor.lastIpcObject;
-                // Check if monitor IPC data exists
-                if (!monitorIpc || (typeof monitorIpc.x !== "number"))
+                // Find monitor data from fresh IPC data (by screen name)
+                const screenName = modelData.name;
+                const monitorIpc = root.monitorsFromIpc.find(m => m.name === screenName);
+                if (!monitorIpc)
                     return null;
 
                 const monitorX = monitorIpc.x;
                 const monitorY = monitorIpc.y;
+                const monitorId = monitorIpc.id;
+                const activeWorkspaceId = monitorIpc.activeWorkspace?.id;
+
+                // Use fresh window list from hyprctl IPC
+                const windows = root.windowsFromIpc;
+                if (!windows || windows.length === 0)
+                    return null;
 
                 // Iterate backwards to respect Z-order (top-most windows first)
-                for (let i = windowList.length - 1; i >= 0; i--) {
-                    let windowItem = windowList[i];
-                    if (!windowItem)
+                for (let i = windows.length - 1; i >= 0; i--) {
+                    let win = windows[i];
+                    if (!win)
                         continue;
 
-                    let ipc = windowItem.lastIpcObject;
+                    // Filter windows on this monitor and active workspace only
+                    if (win.monitor !== monitorId)
+                        continue;
+
+                    if (win.workspace?.id !== activeWorkspaceId)
+                        continue;
 
                     // DEFENSIVE CHECK:
-                    // Verify that IPC data and required arrays exist before accessing index [0]
-                    if (!ipc || !ipc.at || !ipc.size || ipc.at.length < 2 || ipc.size.length < 2) {
+                    if (!win.at || !win.size || win.at.length < 2 || win.size.length < 2)
                         continue;
-                    }
 
                     // Filter out invalid or special windows
-                    if (ipc.title === "" && ipc.class === "")
+                    if ((win.title === "" && win.class === "") || win.hidden)
                         continue;
 
                     // Calculate window boundaries relative to the current monitor
-                    let winX = ipc.at[0] - monitorX;
-                    let winY = ipc.at[1] - monitorY;
-                    let winW = ipc.size[0];
-                    let winH = ipc.size[1];
+                    let winX = win.at[0] - monitorX;
+                    let winY = win.at[1] - monitorY;
+                    let winW = win.size[0];
+                    let winH = win.size[1];
 
                     // Check if the mouse coordinates are within the window area
                     if (mouseX >= winX && mouseX <= winX + winW && mouseY >= winY && mouseY <= winY + winH) {
@@ -295,25 +394,32 @@ Scope {
                             y: winY,
                             width: winW,
                             height: winH,
-                            title: ipc.title || ipc.class || "Window",
-                            className: ipc.class || ""
+                            title: win.title || win.class || "Window",
+                            className: win.class || ""
                         };
                     }
                 }
                 return null;
             }
 
-            // Signal for window hover detection
-            signal checkWindowHover(real mouseX, real mouseY)
-
             // =================================================================
-            // FROZEN SCREEN CAPTURE
+            // FROZEN SCREEN CAPTURE - using grim captured image
             // =================================================================
 
-            ScreencopyView {
+            Image {
                 anchors.fill: parent
-                captureSource: window.screen
+                source: root.tempPath ? "file://" + root.tempPath : ""
+                fillMode: Image.PreserveAspectCrop
                 z: 0
+                cache: false
+
+                // Crop to show only this monitor's portion
+                sourceClipRect: Qt.rect(
+                    window.hyprMonitor?.x || 0,
+                    window.hyprMonitor?.y || 0,
+                    modelData.width,
+                    modelData.height
+                )
             }
 
             // =================================================================
@@ -342,52 +448,6 @@ Scope {
                 z: 1
             }
 
-            // =================================================================
-            // WINDOW DETECTOR (like original WindowSelector)
-            // =================================================================
-
-            Repeater {
-                model: window.windowList
-
-                Item {
-                    required property var modelData
-
-                    Connections {
-                        target: window
-                        enabled: window.isActiveMonitor && root.mode === "window" && !root.hasSelection
-
-                        function onCheckWindowHover(mouseX: real, mouseY: real) {
-                            if (!modelData?.lastIpcObject)
-                                return;
-                            if (!window.hyprMonitor?.lastIpcObject)
-                                return;
-
-                            const ipc = modelData.lastIpcObject;
-                            const monIpc = window.hyprMonitor.lastIpcObject;
-
-                            // Get monitor offset
-                            const monitorX = monIpc.x || 0;
-                            const monitorY = monIpc.y || 0;
-
-                            // Window position relative to monitor
-                            const windowX = ipc.at[0] - monitorX;
-                            const windowY = ipc.at[1] - monitorY;
-                            const windowW = ipc.size[0];
-                            const windowH = ipc.size[1];
-
-                            // Check if mouse is inside window bounds
-                            if (mouseX >= windowX && mouseX <= windowX + windowW && mouseY >= windowY && mouseY <= windowY + windowH) {
-                                root.selectionX = windowX;
-                                root.selectionY = windowY;
-                                root.selectionWidth = windowW;
-                                root.selectionHeight = windowH;
-                                root.selectedWindowTitle = ipc.title || ipc.class || "Window";
-                                root.selectedWindowClass = ipc.class || "";
-                            }
-                        }
-                    }
-                }
-            }
 
             // =================================================================
             // REGION SELECTOR GUIDES
@@ -534,11 +594,6 @@ Scope {
                         if (root.mode === "screen") {
                             root.setMode("screen");
                         }
-                    }
-
-                    // Window mode: check hover
-                    if (root.mode === "window" && !root.hasSelection) {
-                        window.checkWindowHover(mouse.x, mouse.y);
                     }
 
                     // Region mode: drag selection
@@ -946,6 +1001,7 @@ Scope {
                     }
                 }
             }
+        }
         }
     }
 }

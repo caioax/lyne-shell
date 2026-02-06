@@ -141,9 +141,9 @@ Scope {
     }
 
     function cancelCapture() {
-        root.active = false;
         root.hasSelection = false;
         cleanupTempFiles();
+        root.active = false;
     }
 
     function resetSelection() {

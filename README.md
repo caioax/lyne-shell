@@ -112,14 +112,16 @@ lyne <command> [args...]
 
 ### Commands
 
-| Command           | Description                                            |
-| ----------------- | ------------------------------------------------------ |
-| `lyne help`       | Show available commands                                |
-| `lyne init`       | First-time setup (mark migrations as done, sync state) |
-| `lyne update`     | Pull latest changes, sync state, and run migrations    |
-| `lyne git <args>` | Run git commands in the dotfiles repo                  |
-| `lyne state`      | Open `state.json` in your configured editor            |
-| `lyne reload`     | Reload QuickShell                                      |
+| Command   | Description                                         |
+| --------- | --------------------------------------------------- |
+| `state`   | Manage `state.json` (edit, sync, rebuild)           |
+| `migrate` | Manage migrations (run, list, done)                 |
+| `update`  | Pull latest changes, sync state, and run migrations |
+| `git`     | Run git commands in the dotfiles repo               |
+| `reload`  | Reload QuickShell                                   |
+| `help`    | Show available commands                             |
+
+Run `lyne <command> --help` for details and subcommands.
 
 ### Examples
 
@@ -133,8 +135,14 @@ lyne git status
 # Edit the QuickShell state configuration
 lyne state
 
-# Reload QuickShell after manual changes
-lyne reload
+# Sync state.json after a manual defaults.json update
+lyne state sync
+
+# Check which migrations are pending
+lyne migrate list
+
+# Show help for a specific command
+lyne state --help
 ```
 
 ---

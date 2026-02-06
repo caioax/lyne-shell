@@ -1,4 +1,11 @@
-# lyne reload - Restart quickshell detached from the terminal
+# lyne reload - Restart QuickShell detached from the terminal
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    echo "Usage: lyne reload"
+    echo ""
+    echo "Kill and restart QuickShell detached from the terminal."
+    return 0
+fi
 
 quickshell kill
 sleep 0.2

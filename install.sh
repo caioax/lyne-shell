@@ -359,6 +359,30 @@ setup_wallpaper() {
     fi
 }
 
+setup_migrations() {
+    log_header "Initializing Lyne CLI"
+
+    local MIGRATIONS_DIR="$DOTFILES_DIR/.data/lyne-cli/migrations"
+    local DONE_FILE="$HOME/.local/share/lyne/migrations-done"
+
+    mkdir -p "$(dirname "$DONE_FILE")"
+    touch "$DONE_FILE"
+
+    # Mark all current migrations as done (fresh installs don't need them)
+    local count=0
+    for migration in "$MIGRATIONS_DIR"/*.sh; do
+        [[ -f "$migration" ]] || continue
+        local name
+        name="$(basename "$migration")"
+        if ! grep -qxF "$name" "$DONE_FILE" 2>/dev/null; then
+            echo "$name" >> "$DONE_FILE"
+            ((count++))
+        fi
+    done
+
+    log_info "Marked $count migrations as done (fresh install)"
+}
+
 setup_state_aur_helper() {
     local STATE_FILE="$HOME/.config/quickshell/state.json"
 
@@ -431,6 +455,9 @@ full_install() {
     if [[ " ${CATEGORIES[*]} " =~ " theming " ]]; then
         setup_theming
     fi
+
+    # Mark all existing migrations as done (fresh install)
+    setup_migrations
 }
 
 # =============================================================================

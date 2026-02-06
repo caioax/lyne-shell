@@ -59,6 +59,7 @@ lyne() {
     local CMD_DIR="$DOTS_DIR/.data/lyne-cli/commands"
 
     local cmd="${1:-help}"
+    [[ "$cmd" == "--help" || "$cmd" == "-h" ]] && cmd="help"
     shift 2>/dev/null
 
     local cmd_file="$CMD_DIR/$cmd.sh"
@@ -66,10 +67,7 @@ lyne() {
         source "$cmd_file" "$@"
     else
         echo "lyne: unknown command '$cmd'"
-        echo "Available commands:"
-        for f in "$CMD_DIR"/*.sh; do
-            echo "  $(basename "${f%.sh}")"
-        done
+        echo "Run 'lyne help' for usage information."
     fi
 }
 

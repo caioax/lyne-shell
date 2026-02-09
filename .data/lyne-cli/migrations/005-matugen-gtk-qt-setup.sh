@@ -2,6 +2,7 @@
 
 fail() {
     echo -e "\e[1;31m   Error: $1\e[0m"
+    exit 1
 }
 # Install packages if missing
 if ! command -v matugen &>/dev/null; then

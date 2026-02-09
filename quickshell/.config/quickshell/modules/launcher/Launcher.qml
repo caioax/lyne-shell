@@ -129,7 +129,10 @@ PanelWindow {
                                 LauncherService.hide();
                             }
 
-                            Keys.onReturnPressed: LauncherService.launchSelected()
+                            Keys.onReturnPressed: {
+                                contentLoader.item.forceActiveFocus();
+                                LauncherService.launchSelected();
+                            }
 
                             Keys.onUpPressed: {
                                 if (LauncherService.selectedIndex > 0)

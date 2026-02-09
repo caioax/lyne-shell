@@ -187,7 +187,10 @@ PanelWindow {
                                 focus = false;
                                 ClipboardService.hide();
                             }
-                            Keys.onReturnPressed: ClipboardService.selectCurrent()
+                            Keys.onReturnPressed: {
+                                contentLoader.item.forceActiveFocus();
+                                ClipboardService.selectCurrent();
+                            }
                             Keys.onUpPressed: ClipboardService.navigateUp()
                             Keys.onDownPressed: ClipboardService.navigateDown()
                             Keys.onTabPressed: event => {

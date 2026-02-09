@@ -39,6 +39,7 @@ PanelWindow {
             if (WallpaperService.selectedCount > 0) {
                 WallpaperService.clearSelection();
             } else {
+                content.forceActiveFocus();
                 WallpaperService.hide();
             }
         }
@@ -155,7 +156,10 @@ PanelWindow {
                     hoverColor: Config.errorColor
                     textColor: Config.subtextColor
                     hoverTextColor: Config.textColor
-                    onClicked: WallpaperService.hide()
+                    onClicked: {
+                        content.forceActiveFocus();
+                        WallpaperService.hide();
+                    }
                 }
             }
 
@@ -951,6 +955,7 @@ PanelWindow {
             } else if (WallpaperService.selectedCount > 0) {
                 WallpaperService.clearSelection();
             } else {
+                content.forceActiveFocus();
                 WallpaperService.hide();
             }
         }

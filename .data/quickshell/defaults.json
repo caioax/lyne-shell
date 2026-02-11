@@ -44,12 +44,18 @@
     "short": 100,
     "normal": 200,
     "long": 400,
-    "screenshot": false
+    "screenshot": true
   },
   "notifications": {
     "width": 350,
     "imageSize": 40,
     "timeout": 5000,
     "spacing": 10
+  },
+  "idle": {
+    "caffeine": false,
+    "dpmsEnabled": true,
+    "lockTimeout": 600,
+    "dpmsTimeout": 300
   }
 }

@@ -46,7 +46,7 @@ Singleton {
                 hibernateProc.running = true;
                 break;
             case "lock":
-                lockProc.running = true;
+                IdleService.lock();
                 break;
             case "logout":
                 logoutProc.running = true;
@@ -86,11 +86,6 @@ Singleton {
     Process {
         id: hibernateProc
         command: ["systemctl", "hibernate"]
-    }
-
-    Process {
-        id: lockProc
-        command: ["bash", "-c", "hyprlock || swaylock || loginctl lock-session"]
     }
 
     Process {

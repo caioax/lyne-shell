@@ -14,6 +14,8 @@ Singleton {
     property var state: ({})
     property bool isLoading: true
 
+    signal stateLoaded
+
     Component.onCompleted: loadState()
 
     // Watch state.json for external changes (e.g. from lyne CLI)
@@ -103,5 +105,4 @@ Singleton {
     Process {
         id: saveProc
     }
-    signal stateLoaded
 }

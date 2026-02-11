@@ -18,3 +18,5 @@ singleton OsdService OsdService.qml
 singleton WallpaperService WallpaperService.qml
 singleton ClipboardService ClipboardService.qml
 singleton ThemeService ThemeService.qml
+singleton IdleService IdleService.qml
+singleton LockService LockService.qml

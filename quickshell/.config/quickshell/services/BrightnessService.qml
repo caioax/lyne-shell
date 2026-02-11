@@ -8,6 +8,14 @@ import Quickshell.Io
 Singleton {
     id: root
 
+    // Helper function to shorten the service call
+    function getState(path, fallback) {
+        return StateService.get(path, fallback);
+    }
+    function setState(path, value) {
+        StateService.set(path, value);
+    }
+
     // ========================================================================
     // PUBLIC PROPERTIES - BRIGHTNESS
     // ========================================================================
@@ -33,7 +41,7 @@ Singleton {
     // PUBLIC PROPERTIES - NIGHT LIGHT (HYPRSUNSET)
     // ========================================================================
 
-    property bool nightLightEnabled: StateService.get("nightLight.enabled", false)
+    property bool nightLightEnabled: getState("nightLight.enabled", false)
 
     // Temperature in Kelvin (1000 = very warm/orange, 6500 = daylight)
     // Slider goes from 0.0 to 1.0, mapped to 2500K - 5500K
@@ -41,7 +49,7 @@ Singleton {
 
     // Intensity as a 0.0 - 1.0 value for the slider
     // 0.0 = warmer (2500K), 1.0 = cooler (5500K)
-    property real nightLightIntensity: StateService.get("nightLight.intensity", 0.5)
+    property real nightLightIntensity: getState("nightLight.intensity", 0.5)
 
     // Night light icon
     readonly property string nightLightIcon: nightLightEnabled ? "󰌵" : "󰌶"
@@ -61,8 +69,8 @@ Singleton {
 
         function onStateLoaded() {
             // Load night light state
-            root.nightLightEnabled = StateService.get("nightLight.enabled", false);
-            root.nightLightIntensity = StateService.get("nightLight.intensity", 0.5);
+            root.nightLightEnabled = root.getState("nightLight.enabled", false);
+            root.nightLightIntensity = root.getState("nightLight.intensity", 0.5);
             root.updateTemperatureFromIntensity();
 
             console.log("[Brightness] Loaded state - enabled:", root.nightLightEnabled, "intensity:", root.nightLightIntensity);
@@ -200,13 +208,13 @@ Singleton {
 
     function enableNightLight() {
         nightLightEnabled = true;
-        StateService.set("nightLight.enabled", true);
+        setState("nightLight.enabled", true);
         applyNightLight();
     }
 
     function disableNightLight() {
         nightLightEnabled = false;
-        StateService.set("nightLight.enabled", false);
+        setState("nightLight.enabled", false);
         disableNightLightProc.running = true;
     }
 
@@ -214,7 +222,7 @@ Singleton {
     function setNightLightIntensity(intensity: real) {
         nightLightIntensity = Math.max(0.0, Math.min(1.0, intensity));
         updateTemperatureFromIntensity();
-        StateService.set("nightLight.intensity", nightLightIntensity);
+        setState("nightLight.intensity", nightLightIntensity);
 
         if (nightLightEnabled) {
             applyNightLight();
@@ -224,7 +232,7 @@ Singleton {
     function setNightLightTemperature(temp: int) {
         nightLightTemperature = Math.max(2500, Math.min(5500, temp));
         updateIntensityFromTemperature();
-        StateService.set("nightLight.intensity", nightLightIntensity);
+        setState("nightLight.intensity", nightLightIntensity);
 
         if (nightLightEnabled) {
             applyNightLight();

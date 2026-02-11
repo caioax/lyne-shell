@@ -7,6 +7,7 @@ import Quickshell.Hyprland
 import Quickshell.Wayland
 import qs.services
 import "./modules/bar/"
+import "./modules/power/"
 import "./modules/screenshot/"
 
 ShellRoot {
@@ -17,6 +18,39 @@ ShellRoot {
     // =========================================================================
 
     property bool screenshotActive: false
+
+    // Ensure IdleService singleton loads
+    property bool _idleReady: IdleService.caffeineEnabled
+
+    // Idle Monitors
+    IdleMonitor {
+        timeout: IdleService.lockTimeout
+        enabled: !IdleService.caffeineEnabled && !StateService.isLoading
+        respectInhibitors: true
+
+        onIsIdleChanged: {
+            if (isIdle) {
+                console.log("[Idle] Lock timeout reached");
+                IdleService.lock();
+            }
+        }
+    }
+
+    IdleMonitor {
+        timeout: IdleService.dpmsTimeout
+        enabled: !IdleService.caffeineEnabled && IdleService.dpmsEnabled && !StateService.isLoading
+        respectInhibitors: true
+
+        onIsIdleChanged: {
+            if (isIdle) {
+                console.log("[Idle] DPMS timeout, displays off");
+                IdleService.dpmsOff();
+            } else {
+                console.log("[Idle] User returned, displays on");
+                IdleService.dpmsOn();
+            }
+        }
+    }
 
     // =========================================================================
     // BLUETOOTH AGENT
@@ -53,6 +87,18 @@ ShellRoot {
         onStatusChanged: {
             if (status === Loader.Ready)
                 console.log("[Shell] NotificationOverlay loaded");
+        }
+    }
+
+    // Lock Screen
+    Loader {
+        id: lockLoader
+        active: LockService.locked
+        source: "./modules/lock/LockScreen.qml"
+
+        onStatusChanged: {
+            if (status === Loader.Ready)
+                console.log("[Shell] LockScreen loaded");
         }
     }
 
@@ -252,6 +298,14 @@ ShellRoot {
         description: "Clipboard history"
 
         onPressed: ClipboardService.toggle()
+    }
+
+    // Shortcut: Lock Screen
+    GlobalShortcut {
+        name: "lock_screen"
+        description: "Lock screen"
+
+        onPressed: IdleService.lock()
     }
 
     // Shortcut: Keybinds Help

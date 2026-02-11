@@ -187,13 +187,22 @@ Item {
 
             // DND (Do Not Disturb)
             QuickSettingsTile {
-                Layout.columnSpan: BluetoothService.adapter === null ? 2 : 1
                 icon: NotificationService.dndEnabled ? "󰂛" : "󰂚"
                 label: "Do not disturb"
                 subLabel: NotificationService.dndEnabled ? "Enabled" : "Disabled"
                 active: NotificationService.dndEnabled
                 hasDetails: false
                 onToggled: NotificationService.toggleDnd()
+            }
+
+            // Caffeine
+            QuickSettingsTile {
+                icon: IdleService.caffeineEnabled ? "󰛊" : "󰾪"
+                label: "Caffeine"
+                subLabel: IdleService.caffeineEnabled ? "Active" : "Off"
+                active: IdleService.caffeineEnabled
+                hasDetails: false
+                onToggled: IdleService.toggleCaffeine()
             }
         }
 

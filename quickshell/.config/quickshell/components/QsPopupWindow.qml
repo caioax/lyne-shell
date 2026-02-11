@@ -94,6 +94,12 @@ PanelWindow {
         }
     }
 
+    // Click on background closes or clears selection
+    MouseArea {
+        anchors.fill: parent
+        onClicked: root.closeWindow()
+    }
+
     Item {
         anchors.fill: parent
 
@@ -137,6 +143,11 @@ PanelWindow {
             }
 
             Keys.onEscapePressed: root.closeWindow()
+
+            // just to capture the click and prevent it from closing
+            MouseArea {
+                anchors.fill: parent
+            }
 
             Item {
                 id: contentContainer
